@@ -36,6 +36,33 @@ export function AdvancedStats({ sessions, user }: AdvancedStatsProps) {
   const topicsSet = new Set(sessions.map(s => s.topic));
   const bestScore = Math.max(...sessions.filter(s => s.finalScore).map(s => s.finalScore || 0), 0);
 
+  const criterionBuckets: Record<string, { label: string; total: number; count: number }> = {};
+  sessions.forEach((s) => {
+    if (!s.finalFeedback) return;
+    try {
+      const feedback = JSON.parse(s.finalFeedback);
+      const criteria = feedback?.rubric?.criteria || [];
+      criteria.forEach((c: any) => {
+        if (!c?.key || typeof c?.score !== 'number') return;
+        if (!criterionBuckets[c.key]) {
+          criterionBuckets[c.key] = { label: c.label || c.key, total: 0, count: 0 };
+        }
+        criterionBuckets[c.key].total += c.score;
+        criterionBuckets[c.key].count += 1;
+      });
+    } catch {
+      // Ignore malformed historical feedback entries
+    }
+  });
+
+  const criterionAverages = Object.entries(criterionBuckets).map(([key, value]) => ({
+    key,
+    label: value.label,
+    avg: value.count > 0 ? value.total / value.count : 0,
+  }));
+
+  const weakestCriterion = criterionAverages.sort((a, b) => a.avg - b.avg)[0];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
@@ -111,6 +138,21 @@ export function AdvancedStats({ sessions, user }: AdvancedStatsProps) {
             {totalExams > 0 ? ((completedExams / totalExams) * 100).toFixed(0) : 0}%
           </p>
           <p className="text-sm text-gray-600">{completedExams}/{totalExams}</p>
+        </div>
+      </Card>
+
+      <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
+        <div className="border-l-4 border-l-error-400 p-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold text-gray-900">Gap Principale</h3>
+            <Target className="w-5 h-5 text-error-500" />
+          </div>
+          <p className="text-xl font-bold text-error-600 mb-1">
+            {weakestCriterion ? weakestCriterion.label : 'In analisi'}
+          </p>
+          <p className="text-sm text-gray-600">
+            {weakestCriterion ? `Media ${weakestCriterion.avg.toFixed(1)}/10` : 'Completa più esami per avere trend competenze'}
+          </p>
         </div>
       </Card>
     </div>

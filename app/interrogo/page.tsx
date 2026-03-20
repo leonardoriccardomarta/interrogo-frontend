@@ -23,6 +23,7 @@ interface SessionState {
   difficulty: number;
   personality: 'strict' | 'supportive';
   mode?: 'STANDARD' | 'QUICK_TEST';
+  targetQuestions?: number;
 }
 
 export default function InterrogoPage() {
@@ -58,6 +59,10 @@ export default function InterrogoPage() {
     100,
     (quickTestAnsweredCount / quickTestTotalQuestions) * 100
   );
+  const standardAnsweredCount = messages.filter((m) => m.role === 'student').length;
+  const standardTotalQuestions = session?.targetQuestions || (session ? (session.difficulty <= 3 ? 3 : session.difficulty <= 7 ? 4 : 5) : 4);
+  const standardCurrentQuestion = Math.min(standardTotalQuestions, Math.max(1, standardAnsweredCount + 1));
+  const standardProgress = Math.min(100, (standardAnsweredCount / standardTotalQuestions) * 100);
 
   useEffect(() => {
     const bootstrapSession = async () => {
@@ -89,6 +94,7 @@ export default function InterrogoPage() {
           difficulty: quickSession.difficulty,
           personality: quickSession.personality,
           mode: 'QUICK_TEST',
+          targetQuestions: 3,
         });
 
         setMessages(
@@ -161,6 +167,7 @@ export default function InterrogoPage() {
         difficulty: response.difficulty,
         personality: response.personality,
         mode: 'STANDARD',
+        targetQuestions: response.targetQuestions,
       });
       setMessages([
         {
@@ -204,6 +211,14 @@ export default function InterrogoPage() {
         ]);
       } else {
         const response = await apiService.sendMessage(session.id, messageToSend);
+
+        if (response.isComplete) {
+          setResults(response);
+          setPhase('results');
+          localStorage.removeItem('quick_test_session_id');
+          return;
+        }
+
         setMessages((prev) => [
           ...prev,
           { role: 'teacher', content: response.teacherResponse },
@@ -549,6 +564,20 @@ export default function InterrogoPage() {
                     </div>
                   </div>
                 )}
+                {!isQuickTestMode && (
+                  <div className="mt-3 rounded-lg border border-secondary-200 bg-secondary-50 p-3">
+                    <div className="mb-2 flex items-center justify-between text-xs font-semibold text-secondary-700">
+                      <span>🎯 Interrogazione Vera</span>
+                      <span>Domanda {standardCurrentQuestion}/{standardTotalQuestions}</span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-secondary-100">
+                      <div
+                        className="h-2 rounded-full bg-secondary-600 transition-all duration-300"
+                        style={{ width: `${standardProgress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
               </div>
               <Button
                 onClick={handleEndSession}
@@ -788,6 +817,46 @@ export default function InterrogoPage() {
               </Card>
             )}
           </div>
+
+          {results.rubric?.criteria?.length > 0 && (
+            <Card variant="elevated" className="mb-12 border-0 shadow-lg p-6 animate-slide-up">
+              <h3 className="text-2xl font-bold text-gray-900 mb-5">📐 Rubrica di Valutazione</h3>
+              <div className="space-y-5">
+                {results.rubric.criteria.map((criterion: any, idx: number) => (
+                  <div key={idx} className="rounded-lg border border-gray-200 bg-white p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <div className="font-semibold text-gray-900">{criterion.label}</div>
+                      <div className="text-sm font-bold text-primary-700">{criterion.score.toFixed(1)}/10</div>
+                    </div>
+                    <div className="mb-3 h-2 w-full rounded-full bg-gray-100">
+                      <div
+                        className="h-2 rounded-full bg-primary-600 transition-all"
+                        style={{ width: `${Math.min(100, criterion.score * 10)}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-sm text-gray-700"><span className="font-semibold">Perché:</span> {criterion.reason}</p>
+                    <p className="mt-1 text-sm text-gray-600"><span className="font-semibold">Evidenza:</span> {criterion.evidence}</p>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {results.studyPlan?.length > 0 && (
+            <Card variant="elevated" className="mb-12 border-0 shadow-lg p-6 animate-slide-up">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">🗓️ Piano di Ripasso Automatico</h3>
+              <ul className="space-y-3">
+                {results.studyPlan.map((step: string, idx: number) => (
+                  <li key={idx} className="flex items-start gap-3 text-gray-700">
+                    <span className="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-xs font-bold text-primary-700">
+                      {idx + 1}
+                    </span>
+                    <span className="text-sm">{step}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
 
           {/* Full Lists (if more items) */}
           {(results.strengths?.length > 3 || results.weaknesses?.length > 3 || results.suggestions?.length > 3) && (
