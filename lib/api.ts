@@ -116,6 +116,11 @@ class ApiService {
     return response.data;
   }
 
+  async getAnalyticsOverview() {
+    const response = await this.client.get('/interrogo/analytics/overview');
+    return response.data;
+  }
+
   // Quick Test endpoints
   async startQuickTest(topic: string, difficulty: number = 5, personality: string = 'supportive') {
     const response = await this.client.post('/quick-test/start', {
@@ -138,6 +143,16 @@ class ApiService {
     const response = await this.client.post('/interrogo/explain', {
       sessionId,
     });
+    return response.data;
+  }
+
+  async exportAccountData() {
+    const response = await this.client.get('/auth/export-data');
+    return response.data;
+  }
+
+  async deleteAccount() {
+    const response = await this.client.delete('/auth/delete-account');
     return response.data;
   }
 }

@@ -30,6 +30,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isQuickTestLoading, setIsQuickTestLoading] = useState(false);
+  const [analytics, setAnalytics] = useState<any>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -47,6 +48,13 @@ export default function Dashboard() {
 
         setUser(userData);
         setSessions(sessionsData);
+
+        try {
+          const analyticsData = await apiService.getAnalyticsOverview();
+          setAnalytics(analyticsData);
+        } catch (analyticsError) {
+          console.warn('Analytics unavailable:', analyticsError);
+        }
       } catch (err: any) {
         setError('Failed to load dashboard');
         console.error(err);
@@ -107,6 +115,11 @@ export default function Dashboard() {
     (acc, s) => acc + (s.studentAnswerCount ?? Math.floor(s._count.messages / 2)),
     0
   );
+  const avgResponseTime = analytics?.kpis?.avgResponseTimeSeconds;
+  const dontKnowRate = analytics?.kpis?.dontKnowRate ?? 0;
+  const latestWeeklyScore = analytics?.weeklyTrend?.length
+    ? analytics.weeklyTrend[analytics.weeklyTrend.length - 1]?.avgScore
+    : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-100 p-4 md:p-8 relative overflow-hidden">
@@ -243,11 +256,39 @@ export default function Dashboard() {
           </div>
         )}
 
+        {analytics && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 animate-slide-up">
+            <Card variant="elevated" className="border-0 bg-gradient-to-br from-blue-50 to-blue-100/50">
+              <div className="p-6">
+                <h3 className="text-gray-600 font-medium mb-2">Tempo Medio Risposta AI</h3>
+                <p className="text-3xl font-bold text-blue-700">{avgResponseTime ?? '--'}s</p>
+                <p className="text-sm text-gray-600 mt-2">SLA percepita durante l'orale</p>
+              </div>
+            </Card>
+
+            <Card variant="elevated" className="border-0 bg-gradient-to-br from-rose-50 to-rose-100/50">
+              <div className="p-6">
+                <h3 className="text-gray-600 font-medium mb-2">Tasso "Non lo so"</h3>
+                <p className="text-3xl font-bold text-rose-700">{(dontKnowRate * 100).toFixed(0)}%</p>
+                <p className="text-sm text-gray-600 mt-2">Indicatore sicurezza espositiva</p>
+              </div>
+            </Card>
+
+            <Card variant="elevated" className="border-0 bg-gradient-to-br from-emerald-50 to-emerald-100/50">
+              <div className="p-6">
+                <h3 className="text-gray-600 font-medium mb-2">Trend 4 Settimane</h3>
+                <p className="text-3xl font-bold text-emerald-700">{latestWeeklyScore ?? '--'}/10</p>
+                <p className="text-sm text-gray-600 mt-2">Ultima media settimanale</p>
+              </div>
+            </Card>
+          </div>
+        )}
+
         {/* Advanced Statistics Section */}
         {sessions.length > 0 && (
           <div className="mb-12 animate-slide-up">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">📊 Statistiche Avanzate</h2>
-            <AdvancedStats sessions={sessions} user={user} />
+            <AdvancedStats sessions={sessions} user={user} analytics={analytics} />
           </div>
         )}
 

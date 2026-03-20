@@ -4,9 +4,10 @@ import { TrendingUp, Target, Zap, Clock, Award } from 'lucide-react';
 interface AdvancedStatsProps {
   sessions: any[];
   user: any;
+  analytics?: any;
 }
 
-export function AdvancedStats({ sessions, user }: AdvancedStatsProps) {
+export function AdvancedStats({ sessions, user, analytics }: AdvancedStatsProps) {
   const totalExams = sessions.length;
   const completedExams = sessions.filter(s => s.finalScore !== null).length;
   const avgScore = completedExams > 0
@@ -62,9 +63,11 @@ export function AdvancedStats({ sessions, user }: AdvancedStatsProps) {
   }));
 
   const weakestCriterion = criterionAverages.sort((a, b) => a.avg - b.avg)[0];
+  const weakTopics = analytics?.weakTopics || [];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
         <div className="border-l-4 border-l-success-500 p-6">
           <div className="flex items-center justify-between mb-3">
@@ -155,6 +158,31 @@ export function AdvancedStats({ sessions, user }: AdvancedStatsProps) {
           </p>
         </div>
       </Card>
+      </div>
+
+      {weakTopics.length > 0 && (
+        <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
+          <div className="p-6">
+            <h3 className="font-bold text-gray-900 mb-4">🔥 Heatmap Argomenti Deboli</h3>
+            <div className="space-y-3">
+              {weakTopics.slice(0, 6).map((topic: any, idx: number) => (
+                <div key={idx} className="rounded-lg border border-gray-200 p-3">
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold text-gray-900">{topic.topic}</p>
+                    <p className="text-sm font-bold text-error-600">
+                      {topic.weakestCriterion || 'In analisi'}
+                    </p>
+                  </div>
+                  <div className="mt-2 text-xs text-gray-600 flex items-center justify-between">
+                    <span>Media: {topic.avgScore ?? '--'}/10</span>
+                    <span>Esami: {topic.exams}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }
