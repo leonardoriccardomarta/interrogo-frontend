@@ -1,0 +1,145 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased tracking-tight text-gray-900;
+  }
+}
+
+@layer components {
+  /* Button utility classes */
+  .btn-sm {
+    @apply inline-flex items-center justify-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-md {
+    @apply inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-base font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-lg {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg text-lg font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Border gradient utility */
+  .border-gradient {
+    border-image: linear-gradient(to right, transparent, rgba(100, 116, 139, 0.8), transparent) 1;
+  }
+
+  /* Card with elevation */
+  .card-elevated {
+    @apply rounded-xl border border-slate-200 bg-white shadow-lg hover:shadow-xl transition-shadow;
+  }
+
+  .card-outline {
+    @apply rounded-xl border-2 border-slate-300 bg-white;
+  }
+
+  .card-ghost {
+    @apply rounded-xl border-transparent;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/30 backdrop-blur-md border border-white/20;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    @apply bg-gradient-to-br from-blue-50 to-indigo-50;
+  }
+
+  .gradient-dark {
+    @apply bg-gradient-to-br from-gray-900 to-black;
+  }
+
+  /* Text gradients */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-800;
+  }
+
+  /* Spacing utilities */
+  .section-padding {
+    @apply px-4 py-12 sm:px-6 md:px-8 md:py-20;
+  }
+
+  .container-max {
+    @apply mx-auto max-w-6xl px-4 sm:px-6;
+  }
+}
+
+@layer utilities {
+  @keyframes breath {
+    0%, 100% {
+      transform: scale(0.95);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5%);
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-breath {
+    animation: breath 4s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+  }
+
+  .animate-slide-in-right {
+    animation: slide-in-right 0.3s ease-out;
+  }
+}
