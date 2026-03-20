@@ -48,6 +48,17 @@ export default function InterrogoPage() {
   const [results, setResults] = useState<any>(null);
   const [isQuickTestMode, setIsQuickTestMode] = useState(false);
 
+  const quickTestAnsweredCount = messages.filter((m) => m.role === 'student').length;
+  const quickTestTotalQuestions = 3;
+  const quickTestCurrentQuestion = Math.min(
+    quickTestTotalQuestions,
+    quickTestAnsweredCount + 1
+  );
+  const quickTestProgress = Math.min(
+    100,
+    (quickTestAnsweredCount / quickTestTotalQuestions) * 100
+  );
+
   useEffect(() => {
     const bootstrapSession = async () => {
       // Check if user is logged in
@@ -524,6 +535,20 @@ export default function InterrogoPage() {
                   <span>•</span>
                   <span>{session.personality === 'strict' ? '😤 Professore Rigoroso' : '😊 Professore Incoraggiante'}</span>
                 </div>
+                {isQuickTestMode && (
+                  <div className="mt-3 rounded-lg border border-primary-200 bg-primary-50 p-3">
+                    <div className="mb-2 flex items-center justify-between text-xs font-semibold text-primary-700">
+                      <span>⚡ Prova Veloce</span>
+                      <span>Domanda {quickTestCurrentQuestion}/3</span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-primary-100">
+                      <div
+                        className="h-2 rounded-full bg-primary-600 transition-all duration-300"
+                        style={{ width: `${quickTestProgress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
               </div>
               <Button
                 onClick={handleEndSession}
