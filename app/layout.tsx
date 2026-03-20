@@ -11,6 +11,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Interrogo AI - Italian Oral Exam Simulator',
   description: 'Practice Italian oral exams with AI-powered feedback',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

@@ -1,7 +1,10 @@
 import axios from 'axios';
 
-const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-const API_URL = rawApiUrl.endsWith('/') ? rawApiUrl.slice(0, -1) : rawApiUrl;
+const envApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
+const defaultApiOrigin = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3001';
+const rawBase = envApiUrl && envApiUrl.length > 0 ? envApiUrl : defaultApiOrigin;
+const normalizedBase = rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase;
+const API_URL = normalizedBase.endsWith('/api') ? normalizedBase : `${normalizedBase}/api`;
 
 class ApiService {
   private client: any;
