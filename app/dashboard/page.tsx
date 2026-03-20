@@ -16,6 +16,8 @@ interface Session {
   finalScore: number | null;
   createdAt: string;
   endedAt: string | null;
+  studentAnswerCount?: number;
+  teacherQuestionCount?: number;
   _count: {
     messages: number;
   };
@@ -101,7 +103,10 @@ export default function Dashboard() {
     completedExams > 0
       ? (sessions.reduce((acc, s) => acc + (s.finalScore || 0), 0) / completedExams).toFixed(1)
       : 0;
-  const totalMessages = sessions.reduce((acc, s) => acc + s._count.messages, 0);
+  const totalStudentAnswers = sessions.reduce(
+    (acc, s) => acc + (s.studentAnswerCount ?? Math.floor(s._count.messages / 2)),
+    0
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-100 p-4 md:p-8 relative overflow-hidden">
@@ -209,11 +214,11 @@ export default function Dashboard() {
                 <div className="absolute inset-0 bg-gradient-to-r from-secondary-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-gray-600 font-medium">Domande Risposte</h3>
+                    <h3 className="text-gray-600 font-medium">Risposte Date</h3>
                     <Zap className="w-5 h-5 text-secondary-600" />
                   </div>
-                  <p className="text-3xl font-bold text-secondary-700">{totalMessages}</p>
-                  <p className="text-sm text-gray-600 mt-2">Interazioni totali</p>
+                  <p className="text-3xl font-bold text-secondary-700">{totalStudentAnswers}</p>
+                  <p className="text-sm text-gray-600 mt-2">Messaggi studente</p>
                 </div>
               </div>
             </Card>
@@ -296,7 +301,7 @@ export default function Dashboard() {
                             📅 {new Date(session.createdAt).toLocaleDateString()}
                           </span>
                           <span className="flex items-center gap-1">
-                            💬 {session._count.messages} messages
+                            💬 {session.studentAnswerCount ?? Math.floor(session._count.messages / 2)} risposte
                           </span>
                           <span className="flex items-center gap-1">
                             ⚡ Level {session.difficulty}/10

@@ -15,11 +15,14 @@ export function AdvancedStats({ sessions, user }: AdvancedStatsProps) {
 
   const lastFiveScores = sessions
     .filter(s => s.finalScore !== null)
-    .slice(-5)
+    .slice(0, 5)
     .map(s => s.finalScore);
   
+  const newestScore = lastFiveScores[0] || 0;
+  const oldestScore = lastFiveScores[lastFiveScores.length - 1] || 0;
+  const baseline = Math.max(1, oldestScore);
   const improvementTrend = lastFiveScores.length >= 2
-    ? parseFloat(((lastFiveScores[lastFiveScores.length - 1] - lastFiveScores[0]) / lastFiveScores[0] * 100).toFixed(1))
+    ? parseFloat((((newestScore - oldestScore) / baseline) * 100).toFixed(1))
     : 0;
 
   const difficultyStats: Record<number, number> = {};

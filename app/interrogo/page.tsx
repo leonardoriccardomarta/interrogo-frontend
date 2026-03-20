@@ -209,16 +209,33 @@ export default function InterrogoPage() {
   const handleDontKnow = async () => {
     if (!session || isLoading) return;
 
-    setMessages((prev) => [...prev, { role: 'student', content: 'Non lo so.' }]);
+    const dontKnowMessage = 'Non lo so.';
+    setMessages((prev) => [...prev, { role: 'student', content: dontKnowMessage }]);
     setIsLoading(true);
     setError('');
 
     try {
-      const response = await apiService.explainConcept(session.id);
-      setMessages((prev) => [
-        ...prev,
-        { role: 'teacher', content: response.teacherResponse },
-      ]);
+      if (isQuickTestMode) {
+        const response = await apiService.answerQuickTest(session.id, dontKnowMessage);
+
+        if (response.isComplete) {
+          setResults(response);
+          setPhase('results');
+          localStorage.removeItem('quick_test_session_id');
+          return;
+        }
+
+        setMessages((prev) => [
+          ...prev,
+          { role: 'teacher', content: response.teacherResponse },
+        ]);
+      } else {
+        const response = await apiService.explainConcept(session.id);
+        setMessages((prev) => [
+          ...prev,
+          { role: 'teacher', content: response.teacherResponse },
+        ]);
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to explain concept');
       setMessages((prev) => prev.slice(0, -1));
