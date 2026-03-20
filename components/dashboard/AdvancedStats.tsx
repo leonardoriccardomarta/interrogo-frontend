@@ -64,6 +64,14 @@ export function AdvancedStats({ sessions, user, analytics }: AdvancedStatsProps)
 
   const weakestCriterion = criterionAverages.sort((a, b) => a.avg - b.avg)[0];
   const weakTopics = analytics?.weakTopics || [];
+  const competencyTimeline = analytics?.competencyTimeline || [];
+
+  const getTimelineCellClass = (score: number | null) => {
+    if (score === null) return 'bg-gray-100 text-gray-400';
+    if (score >= 8) return 'bg-success-100 text-success-700';
+    if (score >= 6) return 'bg-warning-100 text-warning-700';
+    return 'bg-error-100 text-error-700';
+  };
 
   return (
     <div className="space-y-6">
@@ -176,6 +184,35 @@ export function AdvancedStats({ sessions, user, analytics }: AdvancedStatsProps)
                   <div className="mt-2 text-xs text-gray-600 flex items-center justify-between">
                     <span>Media: {topic.avgScore ?? '--'}/10</span>
                     <span>Esami: {topic.exams}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {competencyTimeline.length > 0 && (
+        <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
+          <div className="p-6">
+            <h3 className="font-bold text-gray-900 mb-4">🧠 Timeline Competenze (4 settimane)</h3>
+            <div className="space-y-3">
+              {competencyTimeline.slice(0, 6).map((criterion: any) => (
+                <div key={criterion.key} className="rounded-lg border border-gray-200 p-3">
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="font-semibold text-gray-900">{criterion.label}</p>
+                    <p className="text-xs text-gray-500">Da 4 settimane fa a oggi</p>
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {(criterion.weeklyScores || []).map((score: number | null, index: number) => (
+                      <div
+                        key={`${criterion.key}-${index}`}
+                        className={`rounded-md px-2 py-2 text-center text-sm font-semibold ${getTimelineCellClass(score)}`}
+                        title={`Settimana ${index + 1}`}
+                      >
+                        {score === null ? '--' : `${score.toFixed(1)}`}
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}

@@ -121,6 +121,57 @@ class ApiService {
     return response.data;
   }
 
+  async getTeacherOverview() {
+    const response = await this.client.get('/interrogo/teacher/overview');
+    return response.data;
+  }
+
+  async getTeacherReportCsv() {
+    const response = await this.client.get('/interrogo/teacher/report.csv', {
+      responseType: 'blob',
+    });
+    return response.data;
+  }
+
+  async getSlaSnapshot() {
+    const healthBase = normalizedBase || '';
+    const response = await axios.get(`${healthBase}/health/sla`, {
+      timeout: 30000,
+    });
+    return response.data;
+  }
+
+  async getSlaHistory() {
+    const healthBase = normalizedBase || '';
+    const response = await axios.get(`${healthBase}/health/sla/history`, {
+      timeout: 30000,
+    });
+    return response.data;
+  }
+
+  async getSlaAlerts() {
+    const healthBase = normalizedBase || '';
+    const response = await axios.get(`${healthBase}/health/sla/alerts`, {
+      timeout: 30000,
+    });
+    return response.data;
+  }
+
+  async buildManualIndex(content: string) {
+    const response = await this.client.post('/interrogo/manual-index', { content });
+    return response.data;
+  }
+
+  async getModerationPolicy() {
+    const response = await this.client.get('/interrogo/moderation/policy');
+    return response.data;
+  }
+
+  async getModerationAudit() {
+    const response = await this.client.get('/interrogo/moderation/audit');
+    return response.data;
+  }
+
   // Quick Test endpoints
   async startQuickTest(topic: string, difficulty: number = 5, personality: string = 'supportive') {
     const response = await this.client.post('/quick-test/start', {
@@ -148,6 +199,11 @@ class ApiService {
 
   async exportAccountData() {
     const response = await this.client.get('/auth/export-data');
+    return response.data;
+  }
+
+  async getRetentionPolicy() {
+    const response = await this.client.get('/auth/retention-policy');
     return response.data;
   }
 

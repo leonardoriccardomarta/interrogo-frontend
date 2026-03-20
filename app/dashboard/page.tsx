@@ -31,6 +31,8 @@ export default function Dashboard() {
   const [error, setError] = useState('');
   const [isQuickTestLoading, setIsQuickTestLoading] = useState(false);
   const [analytics, setAnalytics] = useState<any>(null);
+  const [retentionPolicy, setRetentionPolicy] = useState<any>(null);
+  const [slaSnapshot, setSlaSnapshot] = useState<any>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -54,6 +56,17 @@ export default function Dashboard() {
           setAnalytics(analyticsData);
         } catch (analyticsError) {
           console.warn('Analytics unavailable:', analyticsError);
+        }
+
+        try {
+          const [policy, sla] = await Promise.all([
+            apiService.getRetentionPolicy(),
+            apiService.getSlaSnapshot(),
+          ]);
+          setRetentionPolicy(policy);
+          setSlaSnapshot(sla);
+        } catch (governanceError) {
+          console.warn('Governance snapshot unavailable:', governanceError);
         }
       } catch (err: any) {
         setError('Failed to load dashboard');
@@ -142,6 +155,16 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="flex gap-3 flex-wrap justify-end">
+              {user?.role === 'tutor' && (
+                <Button
+                  onClick={() => router.push('/teacher')}
+                  size="lg"
+                  variant="outline"
+                  className="border-primary-300 text-primary-700 hover:bg-primary-50"
+                >
+                  🏫 Vista Docente
+                </Button>
+              )}
               <Button
                 onClick={() => router.push('/interrogo')}
                 size="lg"
@@ -284,6 +307,29 @@ export default function Dashboard() {
           </div>
         )}
 
+        {(retentionPolicy || slaSnapshot) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 animate-slide-up">
+            {retentionPolicy && (
+              <Card variant="elevated" className="border-0 bg-gradient-to-br from-indigo-50 to-indigo-100/50">
+                <div className="p-6">
+                  <h3 className="text-gray-600 font-medium mb-2">Privacy & Retention</h3>
+                  <p className="text-2xl font-bold text-indigo-700">{retentionPolicy.sessionRetentionDays} giorni</p>
+                  <p className="text-sm text-gray-600 mt-2">Conservazione sessioni didattiche</p>
+                </div>
+              </Card>
+            )}
+            {slaSnapshot && (
+              <Card variant="elevated" className="border-0 bg-gradient-to-br from-teal-50 to-teal-100/50">
+                <div className="p-6">
+                  <h3 className="text-gray-600 font-medium mb-2">SLA Snapshot</h3>
+                  <p className="text-2xl font-bold text-teal-700">{(Number(slaSnapshot.successRate || 0) * 100).toFixed(1)}%</p>
+                  <p className="text-sm text-gray-600 mt-2">Success rate API da ultimo avvio</p>
+                </div>
+              </Card>
+            )}
+          </div>
+        )}
+
         {/* Advanced Statistics Section */}
         {sessions.length > 0 && (
           <div className="mb-12 animate-slide-up">
@@ -303,7 +349,7 @@ export default function Dashboard() {
                 <div className="text-6xl mb-4">📚</div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">No Exams Yet</h2>
                 <p className="text-gray-600 mb-8">
-                  Start your first exam to begin improving your knowledge!
+                  Inizia la tua prima interrogazione per avviare il percorso di miglioramento.
                 </p>
               </div>
               <Button
@@ -312,12 +358,12 @@ export default function Dashboard() {
                 className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
               >
                 <Zap className="w-5 h-5 mr-2" />
-                Take Your First Exam
+                Fai la tua prima interrogazione
               </Button>
             </Card>
           ) : (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Exams</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Interrogazioni Recenti</h2>
               <div className="space-y-4">
                 {sessions.map((session, idx) => (
                   <Card

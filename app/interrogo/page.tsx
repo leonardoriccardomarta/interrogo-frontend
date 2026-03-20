@@ -36,6 +36,9 @@ export default function InterrogoPage() {
   const [personality, setPersonality] = useState<'strict' | 'supportive'>('supportive');
   const [inputMethod, setInputMethod] = useState<'text' | 'pdf'>('text');
   const [fileName, setFileName] = useState('');
+  const [objective, setObjective] = useState<'ripasso' | 'verifica' | 'recupero'>('ripasso');
+  const [manualIndex, setManualIndex] = useState<any>(null);
+  const [isBuildingManualIndex, setIsBuildingManualIndex] = useState(false);
 
   // Session & Chat
   const [phase, setPhase] = useState<SessionPhase>('input');
@@ -160,7 +163,8 @@ export default function InterrogoPage() {
     setIsLoading(true);
 
     try {
-      const response = await apiService.startSession(topic, difficulty, personality, content);
+      const enrichedContent = `${content}\n\n[Obiettivo didattico: ${objective}]`;
+      const response = await apiService.startSession(topic, difficulty, personality, enrichedContent);
       setSession({
         id: response.sessionId,
         topic: response.topic,
@@ -296,6 +300,8 @@ export default function InterrogoPage() {
     setTopic('');
     setDifficulty(5);
     setPersonality('supportive');
+    setObjective('ripasso');
+    setManualIndex(null);
     setFileName('');
     setResults(null);
     setIsQuickTestMode(false);
@@ -322,7 +328,12 @@ export default function InterrogoPage() {
               ← Torna al Dashboard
             </Button>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">🎓 Inizia il Tuo Esame</h1>
-            <p className="text-gray-600 text-lg">Prepara il tuo contenuto e configura i parametri dell'esame</p>
+            <p className="text-gray-600 text-lg">Onboarding in 60 secondi: carica materiale, scegli obiettivo, parti.</p>
+            <div className="mt-4 grid grid-cols-3 gap-2 rounded-lg border border-primary-100 bg-primary-50 p-2 text-xs font-semibold text-primary-700">
+              <div className="rounded-md bg-white p-2 text-center">1. Carica materiale</div>
+              <div className="rounded-md bg-white p-2 text-center">2. Scegli obiettivo</div>
+              <div className="rounded-md bg-white p-2 text-center">3. Inizia orale</div>
+            </div>
           </div>
 
           {error && (
@@ -416,6 +427,61 @@ export default function InterrogoPage() {
                   )}
                 </div>
               )}
+
+              {content.length >= 120 && (
+                <div className="rounded-lg border border-secondary-200 bg-secondary-50 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="font-semibold text-secondary-800">📘 Modalità manuale scolastico</p>
+                      <p className="text-xs text-secondary-700">Estrai indice capitoli, definizioni, formule e date dal materiale.</p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      isLoading={isBuildingManualIndex}
+                      onClick={async () => {
+                        try {
+                          setIsBuildingManualIndex(true);
+                          const index = await apiService.buildManualIndex(content);
+                          setManualIndex(index);
+                        } catch {
+                          setError('Impossibile generare l\'indice semantico del manuale');
+                        } finally {
+                          setIsBuildingManualIndex(false);
+                        }
+                      }}
+                    >
+                      Genera Indice
+                    </Button>
+                  </div>
+
+                  {manualIndex?.summary && (
+                    <div className="mt-3 space-y-3 text-xs">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <div className="rounded-md bg-white p-2">Capitoli: <span className="font-bold">{manualIndex.summary.chapterCount}</span></div>
+                        <div className="rounded-md bg-white p-2">Definizioni: <span className="font-bold">{manualIndex.summary.definitionCount}</span></div>
+                        <div className="rounded-md bg-white p-2">Formule: <span className="font-bold">{manualIndex.summary.formulaCount}</span></div>
+                        <div className="rounded-md bg-white p-2">Date: <span className="font-bold">{manualIndex.summary.dateCount}</span></div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div className="rounded-md bg-white p-2">
+                          <p className="font-semibold text-gray-800 mb-1">Capitoli rilevati</p>
+                          {(manualIndex.chapters || []).slice(0, 3).map((c: any, idx: number) => (
+                            <p key={idx} className="text-gray-600">• {c.title} <span className="text-gray-400">({c.citation})</span></p>
+                          ))}
+                        </div>
+                        <div className="rounded-md bg-white p-2">
+                          <p className="font-semibold text-gray-800 mb-1">Chunk semantici</p>
+                          {(manualIndex.chunks || []).slice(0, 3).map((c: any) => (
+                            <p key={c.id} className="text-gray-600">• conf {Math.round((c.confidence || 0) * 100)}% • {c.citation}</p>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </Card>
 
@@ -437,6 +503,42 @@ export default function InterrogoPage() {
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="es. Storia del Rinascimento Italiano, Fisica Quantistica, ecc."
               />
+
+              <div>
+                <label className="text-sm font-semibold text-gray-700 mb-3 block">🎯 Obiettivo della sessione</label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <button
+                    onClick={() => setObjective('ripasso')}
+                    className={`rounded-lg border-2 p-3 text-sm font-medium transition-all ${
+                      objective === 'ripasso'
+                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                        : 'border-gray-200 text-gray-700'
+                    }`}
+                  >
+                    Ripasso mirato
+                  </button>
+                  <button
+                    onClick={() => setObjective('verifica')}
+                    className={`rounded-lg border-2 p-3 text-sm font-medium transition-all ${
+                      objective === 'verifica'
+                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                        : 'border-gray-200 text-gray-700'
+                    }`}
+                  >
+                    Verifica pre-interrogazione
+                  </button>
+                  <button
+                    onClick={() => setObjective('recupero')}
+                    className={`rounded-lg border-2 p-3 text-sm font-medium transition-all ${
+                      objective === 'recupero'
+                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                        : 'border-gray-200 text-gray-700'
+                    }`}
+                  >
+                    Recupero lacune
+                  </button>
+                </div>
+              </div>
 
               {/* Difficulty Slider */}
               <div>
@@ -515,7 +617,7 @@ export default function InterrogoPage() {
                 size="lg"
                 className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
               >
-                🚀 Inizia Interrogazione
+                🚀 Inizia Interrogazione (60s setup completato)
               </Button>
             </div>
           </Card>
@@ -745,6 +847,33 @@ export default function InterrogoPage() {
               </div>
             </div>
           </Card>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <Card variant="elevated" className="border-0 p-6 bg-success-50/60">
+              <h3 className="text-lg font-bold text-success-700 mb-3">Cosa hai fatto bene</h3>
+              <ul className="space-y-2 text-sm text-gray-700">
+                {(results.strengths || []).slice(0, 3).map((item: string, idx: number) => (
+                  <li key={idx}>✓ {item}</li>
+                ))}
+              </ul>
+            </Card>
+            <Card variant="elevated" className="border-0 p-6 bg-warning-50/60">
+              <h3 className="text-lg font-bold text-warning-700 mb-3">Cosa ripassi oggi</h3>
+              <ul className="space-y-2 text-sm text-gray-700">
+                {(results.weaknesses || []).slice(0, 3).map((item: string, idx: number) => (
+                  <li key={idx}>• {item}</li>
+                ))}
+              </ul>
+            </Card>
+            <Card variant="elevated" className="border-0 p-6 bg-primary-50/60">
+              <h3 className="text-lg font-bold text-primary-700 mb-3">Test da fare domani</h3>
+              <ul className="space-y-2 text-sm text-gray-700">
+                {(results.studyPlan || []).slice(0, 3).map((item: string, idx: number) => (
+                  <li key={idx}>→ {item}</li>
+                ))}
+              </ul>
+            </Card>
+          </div>
 
           {/* Results Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
