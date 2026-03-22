@@ -57,12 +57,23 @@ class ApiService {
   }
 
   // Auth endpoints
-  async signup(email: string, password: string, firstName?: string, lastName?: string) {
+  async signup(
+    email: string,
+    password: string,
+    firstName?: string,
+    lastName?: string,
+    role: 'student' | 'tutor' = 'student',
+    organization?: string,
+    className?: string
+  ) {
     const response = await this.client.post('/auth/signup', {
       email,
       password,
       firstName,
       lastName,
+      role,
+      organization,
+      className,
     });
     return response.data;
   }
@@ -80,21 +91,47 @@ class ApiService {
     return response.data;
   }
 
+  async updateProfile(payload: {
+    firstName?: string;
+    lastName?: string;
+    organization?: string;
+    className?: string;
+  }) {
+    const response = await this.client.patch('/auth/profile', payload);
+    return response.data;
+  }
+
   // Interrogo endpoints
-  async startSession(topic: string, difficulty: number, personality: string, content: string) {
+  async startSession(
+    topic: string,
+    difficulty: number,
+    personality: string,
+    content: string,
+    examMode: 'standard' | 'extended' | 'deep' = 'standard',
+    targetQuestions?: number
+  ) {
     const response = await this.client.post('/interrogo/start', {
       topic,
       difficulty,
       personality,
       content,
+      examMode,
+      targetQuestions,
     });
     return response.data;
   }
 
-  async sendMessage(sessionId: string, message: string) {
+  async sendMessage(
+    sessionId: string,
+    message: string,
+    targetQuestions?: number,
+    examMode: 'standard' | 'extended' | 'deep' = 'standard'
+  ) {
     const response = await this.client.post('/interrogo/message', {
       sessionId,
       message,
+      targetQuestions,
+      examMode,
     });
     return response.data;
   }

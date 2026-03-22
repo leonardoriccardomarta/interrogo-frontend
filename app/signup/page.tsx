@@ -20,6 +20,9 @@ export default function SignupPage() {
     password: '',
     confirmPassword: '',
     name: '',
+    role: 'student',
+    organization: '',
+    className: '',
   });
 
   const validateForm = () => {
@@ -62,7 +65,11 @@ export default function SignupPage() {
       const response = await apiService.signup(
         formData.email,
         formData.password,
-        formData.name
+        formData.name,
+        '',
+        formData.role as 'student' | 'tutor',
+        formData.organization,
+        formData.className
       );
 
       localStorage.setItem('auth_token', response.token);
@@ -159,6 +166,44 @@ export default function SignupPage() {
                 setFormData({ ...formData, confirmPassword: e.target.value })
               }
               error={errors.confirmPassword}
+              size="lg"
+            />
+
+            <div>
+              <label className="block mb-2 text-sm font-semibold text-secondary-700">Tipo account</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  className={`rounded-md border p-2 text-sm font-medium ${formData.role === 'student' ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-gray-200 text-gray-700'}`}
+                  onClick={() => setFormData({ ...formData, role: 'student' })}
+                >
+                  Studente
+                </button>
+                <button
+                  type="button"
+                  className={`rounded-md border p-2 text-sm font-medium ${formData.role === 'tutor' ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-gray-200 text-gray-700'}`}
+                  onClick={() => setFormData({ ...formData, role: 'tutor' })}
+                >
+                  Tutor/Docente
+                </button>
+              </div>
+            </div>
+
+            <Input
+              label="Organizzazione (opzionale)"
+              type="text"
+              placeholder="es. Liceo Galilei"
+              value={formData.organization}
+              onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
+              size="lg"
+            />
+
+            <Input
+              label="Classe (opzionale)"
+              type="text"
+              placeholder="es. 3A"
+              value={formData.className}
+              onChange={(e) => setFormData({ ...formData, className: e.target.value })}
               size="lg"
             />
 

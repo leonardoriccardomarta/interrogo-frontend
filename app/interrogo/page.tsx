@@ -21,9 +21,10 @@ interface SessionState {
   id: string;
   topic: string;
   difficulty: number;
-  personality: 'strict' | 'supportive';
+  personality: 'strict' | 'supportive' | 'socratic';
   mode?: 'STANDARD' | 'QUICK_TEST';
   targetQuestions?: number;
+  examMode?: 'standard' | 'extended' | 'deep';
 }
 
 export default function InterrogoPage() {
@@ -33,8 +34,9 @@ export default function InterrogoPage() {
   const [content, setContent] = useState('');
   const [topic, setTopic] = useState('');
   const [difficulty, setDifficulty] = useState(5);
-  const [personality, setPersonality] = useState<'strict' | 'supportive'>('supportive');
+  const [personality, setPersonality] = useState<'strict' | 'supportive' | 'socratic'>('supportive');
   const [inputMethod, setInputMethod] = useState<'text' | 'pdf'>('text');
+  const [examMode, setExamMode] = useState<'standard' | 'extended' | 'deep'>('extended');
   const [fileName, setFileName] = useState('');
   const [objective, setObjective] = useState<'ripasso' | 'verifica' | 'recupero'>('ripasso');
   const [manualIndex, setManualIndex] = useState<any>(null);
@@ -63,7 +65,7 @@ export default function InterrogoPage() {
     (quickTestAnsweredCount / quickTestTotalQuestions) * 100
   );
   const standardAnsweredCount = messages.filter((m) => m.role === 'student').length;
-  const standardTotalQuestions = session?.targetQuestions || (session ? (session.difficulty <= 3 ? 3 : session.difficulty <= 7 ? 4 : 5) : 4);
+  const standardTotalQuestions = session?.targetQuestions || 8;
   const standardCurrentQuestion = Math.min(standardTotalQuestions, Math.max(1, standardAnsweredCount + 1));
   const standardProgress = Math.min(100, (standardAnsweredCount / standardTotalQuestions) * 100);
 
@@ -144,7 +146,7 @@ export default function InterrogoPage() {
   };
 
   const handleStartSession = async () => {
-    if (!topic.trim()) {
+    if (inputMethod === 'text' && !topic.trim()) {
       setError('Please enter a topic');
       return;
     }
@@ -164,7 +166,8 @@ export default function InterrogoPage() {
 
     try {
       const enrichedContent = `${content}\n\n[Obiettivo didattico: ${objective}]`;
-      const response = await apiService.startSession(topic, difficulty, personality, enrichedContent);
+      const fallbackTarget = examMode === 'deep' ? 12 : examMode === 'extended' ? 9 : 7;
+      const response = await apiService.startSession(topic, difficulty, personality, enrichedContent, examMode, fallbackTarget);
       setSession({
         id: response.sessionId,
         topic: response.topic,
@@ -172,6 +175,7 @@ export default function InterrogoPage() {
         personality: response.personality,
         mode: 'STANDARD',
         targetQuestions: response.targetQuestions,
+        examMode: response.examMode || examMode,
       });
       setMessages([
         {
@@ -214,7 +218,12 @@ export default function InterrogoPage() {
           { role: 'teacher', content: response.teacherResponse },
         ]);
       } else {
-        const response = await apiService.sendMessage(session.id, messageToSend);
+        const response = await apiService.sendMessage(
+          session.id,
+          messageToSend,
+          session.targetQuestions,
+          session.examMode || examMode
+        );
 
         if (response.isComplete) {
           setResults(response);
@@ -300,6 +309,7 @@ export default function InterrogoPage() {
     setTopic('');
     setDifficulty(5);
     setPersonality('supportive');
+    setExamMode('extended');
     setObjective('ripasso');
     setManualIndex(null);
     setFileName('');
@@ -501,7 +511,7 @@ export default function InterrogoPage() {
                 label="📖 Argomento/Materia"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
-                placeholder="es. Storia del Rinascimento Italiano, Fisica Quantistica, ecc."
+                placeholder={inputMethod === 'pdf' ? 'Opzionale: se vuoto lo deduciamo dal PDF' : 'es. Storia del Rinascimento Italiano, Fisica Quantistica, ecc.'}
               />
 
               <div>
@@ -540,6 +550,42 @@ export default function InterrogoPage() {
                 </div>
               </div>
 
+              <div>
+                <label className="text-sm font-semibold text-gray-700 mb-3 block">🧭 Modalità interrogazione</label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <button
+                    onClick={() => setExamMode('standard')}
+                    className={`rounded-lg border-2 p-3 text-sm font-medium transition-all ${
+                      examMode === 'standard'
+                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                        : 'border-gray-200 text-gray-700'
+                    }`}
+                  >
+                    Standard (7+ domande)
+                  </button>
+                  <button
+                    onClick={() => setExamMode('extended')}
+                    className={`rounded-lg border-2 p-3 text-sm font-medium transition-all ${
+                      examMode === 'extended'
+                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                        : 'border-gray-200 text-gray-700'
+                    }`}
+                  >
+                    Estesa (9+ domande)
+                  </button>
+                  <button
+                    onClick={() => setExamMode('deep')}
+                    className={`rounded-lg border-2 p-3 text-sm font-medium transition-all ${
+                      examMode === 'deep'
+                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                        : 'border-gray-200 text-gray-700'
+                    }`}
+                  >
+                    Deep dive (12+ domande)
+                  </button>
+                </div>
+              </div>
+
               {/* Difficulty Slider */}
               <div>
                 <div className="flex items-center justify-between mb-3">
@@ -563,6 +609,13 @@ export default function InterrogoPage() {
                     <span>Facile</span>
                     <span>Difficile</span>
                   </div>
+                  <p className="text-xs text-gray-600">
+                    {difficulty <= 3
+                      ? 'Domande fondamentali e controllo basi.'
+                      : difficulty <= 7
+                        ? 'Domande analitiche con collegamenti.'
+                        : 'Domande avanzate, confronto critico e casi limite.'}
+                  </p>
                 </div>
               </div>
 
@@ -571,7 +624,7 @@ export default function InterrogoPage() {
                 <label className="text-sm font-semibold text-gray-700 mb-3 block">
                   👨‍🏫 Personalità del Professore
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   <button
                     onClick={() => setPersonality('strict')}
                     className={`p-4 rounded-lg border-2 transition-all font-medium ${
@@ -595,6 +648,18 @@ export default function InterrogoPage() {
                     <div className="text-2xl mb-2">😊</div>
                     <div>Incoraggiante</div>
                     <div className="text-xs text-gray-600 mt-1">Supportivo e paziente</div>
+                  </button>
+                  <button
+                    onClick={() => setPersonality('socratic')}
+                    className={`p-4 rounded-lg border-2 transition-all font-medium ${
+                      personality === 'socratic'
+                        ? 'border-primary-500 bg-primary-50 text-primary-700 shadow-md'
+                        : 'border-gray-200 text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="text-2xl mb-2">🧠</div>
+                    <div>Socratico</div>
+                    <div className="text-xs text-gray-600 mt-1">Domande guida progressive</div>
                   </button>
                 </div>
               </div>

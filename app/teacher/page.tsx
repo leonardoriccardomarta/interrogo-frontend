@@ -25,8 +25,8 @@ export default function TeacherDashboardPage() {
         }
 
         const user = await apiService.getCurrentUser();
-        if (user?.role !== 'tutor') {
-          setError('Accesso riservato a docenti/tutor. Aggiungi la tua email in TUTOR_EMAILS nel backend.');
+        if (!['tutor', 'admin'].includes(String(user?.role || ''))) {
+          setError('Accesso riservato a docenti/tutor. Seleziona ruolo tutor in registrazione o aggiorna il tuo account.');
           setIsLoading(false);
           return;
         }
@@ -157,13 +157,13 @@ export default function TeacherDashboardPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               <Card className="p-6 border-0">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Classi (per dominio email)</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Classi (profilo reale)</h2>
                 <div className="space-y-3">
                   {(data.classOverview || []).map((row: any) => (
                     <div key={row.className} className="rounded-lg border border-gray-200 p-3 flex items-center justify-between">
                       <div>
                         <p className="font-semibold text-gray-900">{row.className}</p>
-                        <p className="text-sm text-gray-600">{row.students} studenti • {row.sessions} sessioni</p>
+                        <p className="text-sm text-gray-600">{row.organization} • {row.students} studenti • {row.sessions} sessioni</p>
                       </div>
                       <p className="font-bold text-primary-700">{row.avgScore ?? '--'}/10</p>
                     </div>
