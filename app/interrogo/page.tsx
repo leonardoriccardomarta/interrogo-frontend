@@ -146,11 +146,6 @@ export default function InterrogoPage() {
   };
 
   const handleStartSession = async () => {
-    if (inputMethod === 'text' && !topic.trim()) {
-      setError('Please enter a topic');
-      return;
-    }
-
     if (!content.trim()) {
       setError('Please paste text or upload a PDF');
       return;
@@ -349,7 +344,7 @@ export default function InterrogoPage() {
           {error && (
             <div className="bg-error-50 border border-error-200 rounded-lg p-4 mb-6 text-error-700 flex items-start gap-3 animate-slide-up">
               <span className="text-xl mt-1">⚠️</span>
-              <div>{error.includes('Please enter') ? 'Per favore inserisci un argomento' : error.includes('Please paste') ? 'Per favore incolla testo o carica un PDF' : error.includes('Content must') ? 'Il contenuto deve essere almeno 20 caratteri' : error}</div>
+              <div>{error.includes('Please paste') ? 'Per favore incolla testo o carica un PDF' : error.includes('Content must') ? 'Il contenuto deve essere almeno 20 caratteri' : error}</div>
             </div>
           )}
 
@@ -506,13 +501,9 @@ export default function InterrogoPage() {
             </div>
 
             <div className="space-y-6">
-              {/* Topic Input */}
-              <Input
-                label="📖 Argomento/Materia"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                placeholder={inputMethod === 'pdf' ? 'Opzionale: se vuoto lo deduciamo dal PDF' : 'es. Storia del Rinascimento Italiano, Fisica Quantistica, ecc.'}
-              />
+              <div className="rounded-lg border border-primary-100 bg-primary-50 p-3 text-sm text-primary-700">
+                📌 Argomento rilevato automaticamente dal materiale caricato (PDF o testo).
+              </div>
 
               <div>
                 <label className="text-sm font-semibold text-gray-700 mb-3 block">🎯 Obiettivo della sessione</label>
@@ -682,7 +673,7 @@ export default function InterrogoPage() {
                 size="lg"
                 className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
               >
-                🚀 Inizia Interrogazione (60s setup completato)
+                🚀 Inizia Interrogazione
               </Button>
             </div>
           </Card>
