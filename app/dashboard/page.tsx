@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { LogOut, Plus, Zap, TrendingUp, Clock, Trophy, Zap as Lightning } from 'lucide-react';
+import { Input } from '@/components/ui/Input';
+import { LogOut, Plus, Zap, TrendingUp, Clock, Trophy, Zap as Lightning, Sparkles, BookOpen, X } from 'lucide-react';
 import { apiService } from '@/lib/api';
 import { AdvancedStats } from '@/components/dashboard/AdvancedStats';
 
@@ -33,6 +34,10 @@ export default function Dashboard() {
   const [analytics, setAnalytics] = useState<any>(null);
   const [retentionPolicy, setRetentionPolicy] = useState<any>(null);
   const [slaSnapshot, setSlaSnapshot] = useState<any>(null);
+  const [isQuickTestModalOpen, setIsQuickTestModalOpen] = useState(false);
+  const [quickTestTopic, setQuickTestTopic] = useState('');
+  const [quickTestDifficulty, setQuickTestDifficulty] = useState(5);
+  const [quickTestPersonality, setQuickTestPersonality] = useState<'strict' | 'supportive' | 'socratic'>('supportive');
 
   useEffect(() => {
     const loadData = async () => {
@@ -85,16 +90,24 @@ export default function Dashboard() {
   };
 
   const handleQuickTest = async () => {
-    const topic = prompt('📚 Inserisci l\'argomento per la prova veloce (3 domande):');
-    if (!topic) return;
+    setIsQuickTestModalOpen(true);
+  };
+
+  const handleStartQuickTest = async () => {
+    if (!quickTestTopic.trim()) {
+      setError('Inserisci un argomento per la prova veloce');
+      return;
+    }
 
     try {
       setIsQuickTestLoading(true);
-      const response = await apiService.startQuickTest(topic, 5, 'supportive');
+      const response = await apiService.startQuickTest(quickTestTopic.trim(), quickTestDifficulty, quickTestPersonality);
       
       if (response.sessionId) {
         // Salva session info
         localStorage.setItem('quick_test_session_id', response.sessionId);
+        setIsQuickTestModalOpen(false);
+        setQuickTestTopic('');
         router.push('/interrogo');
       }
     } catch (err: any) {
@@ -145,16 +158,21 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-12 animate-slide-up">
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                🎓 Il Tuo Dashboard
-              </h1>
-              <p className="text-gray-600 text-lg">
-                Bentornato, <span className="font-semibold">{user?.firstName || user?.email || 'Studente'}</span>!
-              </p>
-            </div>
-            <div className="flex gap-3 flex-wrap justify-end">
+          <Card className="border-0 bg-gradient-to-r from-white/95 via-primary-50 to-secondary-50 shadow-xl p-6 md:p-8">
+            <div className="flex justify-between items-start gap-6 flex-wrap">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700 mb-3">
+                  <Sparkles className="w-3 h-3" />
+                  Learning Command Center
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+                  🎓 Il Tuo Dashboard
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Bentornato, <span className="font-semibold">{user?.firstName || user?.email || 'Studente'}</span>! Qui controlli progresso, KPI e prossime mosse.
+                </p>
+              </div>
+              <div className="flex gap-3 flex-wrap justify-end">
               {user?.role === 'tutor' && (
                 <Button
                   onClick={() => router.push('/teacher')}
@@ -177,8 +195,7 @@ export default function Dashboard() {
                 onClick={handleQuickTest}
                 disabled={isQuickTestLoading}
                 size="lg"
-                variant="outline"
-                className="border-secondary-300 text-secondary-700 hover:bg-secondary-50"
+                className="bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800 text-white"
               >
                 <Lightning className="w-5 h-5 mr-2" />
                 ⚡ Prova Veloce
@@ -187,7 +204,38 @@ export default function Dashboard() {
                 <LogOut className="w-5 h-5 mr-2" />
                 Esci
               </Button>
+              </div>
             </div>
+          </Card>
+
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="border-0 bg-white/85 shadow-md p-4 hover:shadow-lg transition-all">
+              <div className="flex items-center gap-3">
+                <BookOpen className="w-5 h-5 text-primary-600" />
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Focus consigliato</p>
+                  <p className="text-xs text-gray-600">Ripasso mirato su gap principali</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="border-0 bg-white/85 shadow-md p-4 hover:shadow-lg transition-all" style={{ animationDelay: '0.06s' }}>
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-secondary-600" />
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Modalità top</p>
+                  <p className="text-xs text-gray-600">Extended/Deep per simulazioni realistiche</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="border-0 bg-white/85 shadow-md p-4 hover:shadow-lg transition-all" style={{ animationDelay: '0.12s' }}>
+              <div className="flex items-center gap-3">
+                <TrendingUp className="w-5 h-5 text-success-600" />
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Obiettivo settimana</p>
+                  <p className="text-xs text-gray-600">Aumenta copertura fonte oltre il 40%</p>
+                </div>
+              </div>
+            </Card>
           </div>
         </div>
 
@@ -451,6 +499,97 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {isQuickTestModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <Card className="w-full max-w-xl border-0 shadow-2xl animate-slide-up">
+            <div className="p-6 md:p-7">
+              <div className="mb-5 flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">⚡ Avvia Prova Veloce</h3>
+                  <p className="text-sm text-gray-600 mt-1">Setup rapido, look professionale, risultato immediato.</p>
+                </div>
+                <button
+                  className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                  onClick={() => {
+                    setIsQuickTestModalOpen(false);
+                    setQuickTestTopic('');
+                  }}
+                  aria-label="Chiudi"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-5">
+                <Input
+                  label="Argomento"
+                  value={quickTestTopic}
+                  onChange={(e) => setQuickTestTopic(e.target.value)}
+                  placeholder="es. Moto uniformemente accelerato"
+                />
+
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <label className="text-sm font-semibold text-gray-700">Difficoltà</label>
+                    <span className="rounded-full bg-primary-100 px-3 py-1 text-xs font-bold text-primary-700">{quickTestDifficulty}/10</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={quickTestDifficulty}
+                    onChange={(e) => setQuickTestDifficulty(parseInt(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold text-gray-700 mb-2 block">Personalità docente</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([
+                      { key: 'supportive', label: '😊 Supportivo' },
+                      { key: 'strict', label: '😤 Rigoroso' },
+                      { key: 'socratic', label: '🧠 Socratico' },
+                    ] as const).map((opt) => (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        onClick={() => setQuickTestPersonality(opt.key)}
+                        className={`rounded-lg border-2 px-3 py-2 text-xs font-semibold transition-all ${
+                          quickTestPersonality === opt.key
+                            ? 'border-primary-500 bg-primary-50 text-primary-700'
+                            : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex gap-3">
+                <Button
+                  variant="outline"
+                  fullWidth={true}
+                  onClick={() => setIsQuickTestModalOpen(false)}
+                >
+                  Annulla
+                </Button>
+                <Button
+                  fullWidth={true}
+                  isLoading={isQuickTestLoading}
+                  onClick={handleStartQuickTest}
+                  className="bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800"
+                >
+                  Inizia Prova Veloce
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
