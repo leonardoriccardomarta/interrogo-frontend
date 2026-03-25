@@ -248,6 +248,17 @@ class ApiService {
     const response = await this.client.delete('/auth/delete-account');
     return response.data;
   }
+
+  // Subscription endpoints
+  async getSubscriptionStatus() {
+    const response = await this.client.get('/subscription/status');
+    return response.data;
+  }
+
+  async createCheckoutSession(plan: 'monthly' | 'annual') {
+    const response = await this.client.post('/subscription/checkout', { plan });
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();

@@ -32,8 +32,6 @@ export default function Dashboard() {
   const [error, setError] = useState('');
   const [isQuickTestLoading, setIsQuickTestLoading] = useState(false);
   const [analytics, setAnalytics] = useState<any>(null);
-  const [retentionPolicy, setRetentionPolicy] = useState<any>(null);
-  const [slaSnapshot, setSlaSnapshot] = useState<any>(null);
   const [isQuickTestModalOpen, setIsQuickTestModalOpen] = useState(false);
   const [quickTestTopic, setQuickTestTopic] = useState('');
   const [quickTestDifficulty, setQuickTestDifficulty] = useState(5);
@@ -63,16 +61,6 @@ export default function Dashboard() {
           console.warn('Analytics unavailable:', analyticsError);
         }
 
-        try {
-          const [policy, sla] = await Promise.all([
-            apiService.getRetentionPolicy(),
-            apiService.getSlaSnapshot(),
-          ]);
-          setRetentionPolicy(policy);
-          setSlaSnapshot(sla);
-        } catch (governanceError) {
-          console.warn('Governance snapshot unavailable:', governanceError);
-        }
       } catch (err: any) {
         setError('Failed to load dashboard');
         console.error(err);
@@ -352,29 +340,6 @@ export default function Dashboard() {
                 <p className="text-sm text-gray-600 mt-2">Ultima media settimanale</p>
               </div>
             </Card>
-          </div>
-        )}
-
-        {(retentionPolicy || slaSnapshot) && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 animate-slide-up">
-            {retentionPolicy && (
-              <Card variant="elevated" className="border-0 bg-gradient-to-br from-indigo-50 to-indigo-100/50">
-                <div className="p-6">
-                  <h3 className="text-gray-600 font-medium mb-2">Privacy & Retention</h3>
-                  <p className="text-2xl font-bold text-indigo-700">{retentionPolicy.sessionRetentionDays} giorni</p>
-                  <p className="text-sm text-gray-600 mt-2">Conservazione sessioni didattiche</p>
-                </div>
-              </Card>
-            )}
-            {slaSnapshot && (
-              <Card variant="elevated" className="border-0 bg-gradient-to-br from-teal-50 to-teal-100/50">
-                <div className="p-6">
-                  <h3 className="text-gray-600 font-medium mb-2">SLA Snapshot</h3>
-                  <p className="text-2xl font-bold text-teal-700">{(Number(slaSnapshot.successRate || 0) * 100).toFixed(1)}%</p>
-                  <p className="text-sm text-gray-600 mt-2">Success rate API da ultimo avvio</p>
-                </div>
-              </Card>
-            )}
           </div>
         )}
 

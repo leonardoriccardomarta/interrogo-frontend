@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Card, CardBody, CardHeader, CardFooter } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -29,6 +29,7 @@ interface SessionState {
 
 export default function InterrogoPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Input phase
   const [content, setContent] = useState('');
@@ -47,6 +48,10 @@ export default function InterrogoPage() {
   const [session, setSession] = useState<SessionState | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState('');
+  
+  // Subscription & Paywall
+  const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -76,6 +81,57 @@ export default function InterrogoPage() {
       if (!token) {
         router.push('/login');
         return;
+      }
+
+      const sessionIdFromQuery = searchParams.get('sessionId');
+      if (sessionIdFromQuery) {
+        try {
+          setIsLoading(true);
+          const loadedSession = await apiService.getSession(sessionIdFromQuery);
+          const loadedMessages = (loadedSession.messages || []).map((m: any) => ({
+            role: m.role,
+            content: m.content,
+          }));
+
+          const teacherQuestionCount = loadedMessages.filter((m: Message) => m.role === 'teacher').length;
+          const fallbackTarget = loadedSession.difficulty <= 3 ? 7 : loadedSession.difficulty <= 7 ? 9 : 12;
+
+          setSession({
+            id: loadedSession.id,
+            topic: loadedSession.topic,
+            difficulty: loadedSession.difficulty,
+            personality: loadedSession.personality,
+            mode: 'STANDARD',
+            targetQuestions: Math.max(fallbackTarget, teacherQuestionCount + 1),
+            examMode: 'extended',
+          });
+
+          setMessages(loadedMessages);
+          setIsQuickTestMode(false);
+
+          if (loadedSession.endedAt) {
+            const feedback = loadedSession.feedback || {};
+            setResults({
+              score: Number(loadedSession.score || 0),
+              strengths: feedback.strengths || [],
+              weaknesses: feedback.weaknesses || [],
+              suggestions: feedback.suggestions || [],
+              rubric: feedback.rubric,
+              studyPlan: feedback.studyPlan || [],
+              kpis: feedback.kpis || {},
+            });
+            setPhase('results');
+          } else {
+            setPhase('chat');
+          }
+
+          return;
+        } catch (err) {
+          console.error('Failed to restore session from query:', err);
+          setError('Impossibile riprendere la sessione selezionata');
+        } finally {
+          setIsLoading(false);
+        }
       }
 
       // Restore quick test if it was started from dashboard
@@ -119,7 +175,22 @@ export default function InterrogoPage() {
     };
 
     bootstrapSession();
-  }, [router]);
+  }, [router, searchParams]);
+
+  // Load subscription status
+  useEffect(() => {
+    const loadSubsc = async () => {
+      try {
+        const status = await apiService.getSubscriptionStatus();
+        setSubscriptionStatus(status);
+      } catch (err) {
+        console.warn('Failed to load subscription:', err);
+        // Default to free user
+        setSubscriptionStatus({ plan: 'free', sessionsUsed: 0, sessionsLimit: 2, canCreateSession: true });
+      }
+    };
+    loadSubsc();
+  }, []);
 
   const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -153,6 +224,12 @@ export default function InterrogoPage() {
 
     if (content.length < 20) {
       setError('Content must be at least 20 characters');
+      return;
+    }
+
+    // Check freemium limit
+    if (subscriptionStatus && !subscriptionStatus.canCreateSession) {
+      setShowUpgradeModal(true);
       return;
     }
 
@@ -1115,6 +1192,68 @@ export default function InterrogoPage() {
             </Button>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  // Upgrade modal for freemium users
+  if (showUpgradeModal) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <Card className="w-full max-w-md mx-4">
+          <CardHeader>
+            <h2 className="text-2xl font-bold">🚀 Passa a Premium</h2>
+          </CardHeader>
+          <CardBody>
+            <p className="text-gray-600 mb-4">
+              Hai raggiunto il limite di 2 sessioni gratis al mese. Passa a Premium per pratica illimitata!
+            </p>
+            <div className="bg-primary-50 p-4 rounded-lg mb-6">
+              <p className="text-sm font-semibold text-primary-700 mb-2">Cosa ottieni con Premium:</p>
+              <ul className="text-sm text-gray-700 space-y-1">
+                <li>✓ Sessioni illimitate</li>
+                <li>✓ Valutazione avanzata</li>
+                <li>✓ Export risultati PDF</li>
+                <li>✓ Accesso prioritario</li>
+              </ul>
+            </div>
+          </CardBody>
+          <CardFooter className="flex gap-3">
+            <Button
+              onClick={() => setShowUpgradeModal(false)}
+              variant="outline"
+              className="flex-1"
+            >
+              Dopo
+            </Button>
+            <Button
+              onClick={async () => {
+                try {
+                  const { url } = await apiService.createCheckoutSession('monthly');
+                  window.location.href = url;
+                } catch (err) {
+                  console.error('Checkout error:', err);
+                }
+              }}
+              className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 flex-1"
+            >
+              €3.99/mese
+            </Button>
+            <Button
+              onClick={async () => {
+                try {
+                  const { url } = await apiService.createCheckoutSession('annual');
+                  window.location.href = url;
+                } catch (err) {
+                  console.error('Checkout error:', err);
+                }
+              }}
+              className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 flex-1"
+            >
+              €29.99/anno
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
     );
   }
