@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interrogo - Train for Your Oral Exam</title>
+    <meta name="description" content="Practice oral exams with realistic AI. Instant feedback, rubric scoring, and progress tracking.">
+    <meta property="og:title" content="Interrogo - Train for Oral Exams">
+    <meta property="og:description" content="Thousands of students improve with Interrogo.">
+    <meta property="og:image" content="https://interrogo.it/og-image.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+                body {
+                        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                        color: #e2e8f0;
+                        line-height: 1.6;
+                        background:
+                            radial-gradient(circle at top left, rgba(59,130,246,0.22), transparent 26%),
+                            radial-gradient(circle at top right, rgba(168,85,247,0.22), transparent 24%),
+                            linear-gradient(180deg, #111827 0%, #1f1b4b 40%, #2d1b69 74%, #111827 100%);
+                        -webkit-font-smoothing: antialiased;
+                        -moz-osx-font-smoothing: grayscale;
+                }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+                        background: rgba(255,255,255,0.96);
+                        border: 1px solid rgba(148,163,184,0.18);
+            border-radius: 18px;
+                        box-shadow: 0 18px 50px rgba(15,23,42,0.18);
+            backdrop-filter: blur(12px);
+            max-width: 1120px;
+            margin: 1.25rem auto 0;
+        }
+                .logo { font-size: 1.5rem; font-weight: 800; color: #1d4ed8; letter-spacing: -0.04em; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: #475569; font-size: 0.95rem; font-weight: 500; }
+        .nav-links a:hover { color: #2563eb; }
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+            box-shadow: 0 10px 20px rgba(37,99,235,0.28);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(37,99,235,0.34); }
+        
+        .hero {
+            padding: 5.5rem 2rem 4rem;
+            text-align: center;
+            animation: fade-in 0.8s ease-in;
+        }
+        .hero h1 {
+            font-size: clamp(3rem, 6vw, 5.7rem);
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+            line-height: 0.96;
+            letter-spacing: -0.05em;
+            font-weight: 800;
+        }
+        .hero h1 .accent {
+            background: linear-gradient(135deg, #fde047, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        .hero p {
+            font-size: 1.15rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .trust-row {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin: 0 auto 1.75rem;
+        }
+        .trust-badge {
+            padding: 0.55rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #e2e8f0;
+            font-size: 0.8rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+        .hero-metrics {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 2rem 0 2.25rem;
+        }
+        .metric {
+            min-width: 110px;
+        }
+        .metric strong {
+            display: block;
+            font-size: 1.4rem;
+            color: #fff;
+            letter-spacing: -0.03em;
+        }
+        .metric span {
+            display: block;
+            font-size: 0.78rem;
+            color: #cbd5e1;
+        }
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.06);
+            color: #e2e8f0;
+            border: 1px solid rgba(255,255,255,0.16);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 18px rgba(15,23,42,0.16);
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.24); }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .feature {
+            padding: 2rem;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 16px 40px rgba(15,23,42,0.16);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            color: #e2e8f0;
+        }
+        .feature:hover {
+            border-color: rgba(255,255,255,0.24);
+            box-shadow: 0 20px 50px rgba(15,23,42,0.24);
+            transform: translateY(-4px);
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .feature h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+        .feature p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+        
+        .demo-section {
+            background: rgba(255,255,255,0.06);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .demo-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #ffffff;
+            letter-spacing: -0.03em;
+        }
+        .video-placeholder {
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 18px 40px rgba(15,23,42,0.16);
+        }
+        .video-placeholder:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
+        }
+        
+        .pricing {
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, rgba(17,24,39,0.88) 0%, rgba(31,27,75,0.92) 100%);
+        }
+        .pricing h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #ffffff;
+            letter-spacing: -0.03em;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .plan {
+            background: rgba(255,255,255,0.96);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.12);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 18px 40px rgba(15,23,42,0.22);
+        }
+        .plan.popular {
+            border-color: #fde047;
+            box-shadow: 0 22px 50px rgba(253, 224, 71, 0.16);
+            transform: translateY(-4px) scale(1.02);
+        }
+        .plan-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #0f172a;
+        }
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 0.25rem;
+        }
+        .plan-desc {
+            color: #475569;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        .plan-features li {
+            padding: 0.5rem 0;
+            color: #334155;
+            font-size: 0.95rem;
+        }
+        .plan-features li:before {
+            content: "✓ ";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        .plan button {
+            width: 100%;
+        }
+        
+        .testimonials {
+            padding: 4rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .testimonials h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #ffffff;
+        }
+        .testimonial {
+            background: rgba(255,255,255,0.08);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #fde047;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 12px 30px rgba(15,23,42,0.18);
+            margin-bottom: 1.5rem;
+        }
+        .testimonial p {
+            color: #e2e8f0;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        .testimonial-author {
+            font-weight: 600;
+            color: #fde047;
+            font-size: 0.95rem;
+        }
+        
+        .footer {
+            background: rgba(15,23,42,0.9);
+            color: #e2e8f0;
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.25rem; }
+            .hero p { font-size: 1rem; }
+            .nav-links { gap: 1rem; font-size: 0.85rem; }
+            .plan.popular { transform: scale(1); }
+            .navbar { margin: 0.75rem 0.75rem 0; padding: 1rem 1.25rem; }
+            .features, .pricing, .testimonials, .demo-section, .hero { padding-left: 1rem; padding-right: 1rem; }
+            .hero-metrics { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">Interrogo</div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <button class="btn-primary" onclick="window.location.href='/dashboard'">Sign In</button>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="trust-row">
+            <span class="trust-badge">AI Oral Exam Coach</span>
+            <span class="trust-badge">Instant Feedback</span>
+            <span class="trust-badge">Rubric Scoring</span>
+            <span class="trust-badge">Progress Tracking</span>
+        </div>
+        <h1>Train for Your <span class="accent">Oral Exam</span></h1>
+        <p>Practice with realistic AI. Get instant feedback, rubric-based scoring, and clear progress tracking.</p>
+        <div class="hero-metrics">
+            <div class="metric"><strong>10k+</strong><span>Sessions completed</span></div>
+            <div class="metric"><strong>40%</strong><span>Faster improvement</span></div>
+            <div class="metric"><strong>2 sec</strong><span>Response time</span></div>
+        </div>
+        <div class="cta-group">
+            <button class="btn-primary" onclick="window.location.href='/signup'">Start Free</button>
+            <button class="btn-secondary" onclick="document.querySelector('.demo-section').scrollIntoView()">Watch Demo</button>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features">
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🎤</div>
+                <h3>Realistic Conversation</h3>
+                <p>The AI responds like a real examiner. Customize the difficulty level.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>Rubric Evaluation</h3>
+                <p>Detailed feedback on structure, clarity, and content quality. Just like a real exam.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📈</div>
+                <h3>Track Progress</h3>
+                <p>Dashboard with useful stats. See your improvement week by week.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast and Private</h3>
+                <p>5-10 minute sessions. Your data stays yours, GDPR compliant.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h3>Any Subject</h3>
+                <p>Languages, history, science, and more.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💡</div>
+                <h3>Smart Suggestions</h3>
+                <p>Actionable recommendations based on your recurring mistakes.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEMO -->
+    <section class="demo-section">
+        <h2>See a Session in Action</h2>
+        <div class="video-placeholder">🎬 Video (coming soon)</div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="pricing">
+        <h2>Simple Pricing</h2>
+        <div class="pricing-grid">
+            <div class="plan">
+                <div class="plan-name">Free</div>
+                <div class="plan-price">€0</div>
+                <div class="plan-desc">Perfect for getting started</div>
+                <ul class="plan-features">
+                    <li>2 sessions/month</li>
+                    <li>Basic feedback</li>
+                    <li>1 subject</li>
+                </ul>
+                <button class="btn-secondary" onclick="window.location.href='/signup'">Start Free</button>
+            </div>
+            <div class="plan popular">
+                <div class="plan-name">Premium Monthly</div>
+                <div class="plan-price">€3,99</div>
+                <div class="plan-desc">For consistent regular practice</div>
+                <ul class="plan-features">
+                    <li>Unlimited sessions</li>
+                    <li>Advanced evaluation</li>
+                    <li>All subjects</li>
+                    <li>Result export</li>
+                    <li>Priority support</li>
+                </ul>
+                <button class="btn-primary" onclick="window.location.href='/signup?plan=monthly'">Try 7 Days Free</button>
+            </div>
+            <div class="plan">
+                <div class="plan-name">Premium Annual</div>
+                <div class="plan-price">€29,99</div>
+                <div class="plan-desc">37% off versus monthly</div>
+                <ul class="plan-features">
+                    <li>Unlimited sessions</li>
+                    <li>Advanced evaluation</li>
+                    <li>All subjects</li>
+                    <li>Result export</li>
+                    <li>Priority support</li>
+                </ul>
+                <button class="btn-primary" onclick="window.location.href='/signup?plan=annual'">Try 7 Days Free</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials">
+        <h2>What Students Say</h2>
+        <div class="testimonial">
+            <p>"I used Interrogo for 3 weeks before my exam. The feedback was incredibly clear and practical."</p>
+            <div class="testimonial-author">— Giulia, Senior High School</div>
+        </div>
+        <div class="testimonial">
+            <p>"Much better than studying alone. The AI really behaves like a real examiner."</p>
+            <div class="testimonial-author">— Marco, Science Track</div>
+        </div>
+        <div class="testimonial">
+            <p>"I loved the progress tracker. Seeing weekly improvement kept me motivated."</p>
+            <div class="testimonial-author">— Alice, Language Track</div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>&copy; 2026 Interrogo. All rights reserved. <a href="/privacy" style="color: #6366f1; text-decoration: none;">Privacy</a> | <a href="/terms" style="color: #6366f1; text-decoration: none;">Terms</a></p>
+    </footer>
+</body>
+</html>
