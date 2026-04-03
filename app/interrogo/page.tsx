@@ -38,7 +38,7 @@ export default function InterrogoPage() {
   const [inputMethod, setInputMethod] = useState<'text' | 'pdf'>('text');
   const [examMode, setExamMode] = useState<'standard' | 'extended' | 'deep'>('extended');
   const [fileName, setFileName] = useState('');
-  const [objective, setObjective] = useState<'ripasso' | 'verifica' | 'recupero'>('ripasso');
+  const [objective, setObjective] = useState<'review' | 'assessment' | 'recovery'>('review');
   const [manualIndex, setManualIndex] = useState<any>(null);
   const [isBuildingManualIndex, setIsBuildingManualIndex] = useState(false);
 
@@ -160,7 +160,7 @@ export default function InterrogoPage() {
     setIsLoading(true);
 
     try {
-      const enrichedContent = `${content}\n\n[Obiettivo didattico: ${objective}]`;
+      const enrichedContent = `${content}\n\n[Learning objective: ${objective}]`;
       const fallbackTarget = examMode === 'deep' ? 12 : examMode === 'extended' ? 9 : 7;
       const response = await apiService.startSession(topic, difficulty, personality, enrichedContent, examMode, fallbackTarget);
       setSession({
@@ -243,7 +243,7 @@ export default function InterrogoPage() {
   const handleDontKnow = async () => {
     if (!session || isLoading) return;
 
-    const dontKnowMessage = 'Non lo so.';
+    const dontKnowMessage = "I don't know.";
     setMessages((prev) => [...prev, { role: 'student', content: dontKnowMessage }]);
     setIsLoading(true);
     setError('');
@@ -305,7 +305,7 @@ export default function InterrogoPage() {
     setDifficulty(5);
     setPersonality('supportive');
     setExamMode('extended');
-    setObjective('ripasso');
+    setObjective('review');
     setManualIndex(null);
     setFileName('');
     setResults(null);
@@ -330,21 +330,21 @@ export default function InterrogoPage() {
               onClick={() => router.push('/dashboard')}
               className="mb-4"
             >
-              ← Torna al Dashboard
+              ← Back to Dashboard
             </Button>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">🎓 Inizia il Tuo Esame</h1>
-            <p className="text-gray-600 text-lg">Onboarding in 60 secondi: carica materiale, scegli obiettivo, parti.</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">🎓 Start Your Exam</h1>
+            <p className="text-gray-600 text-lg">Set up in under 60 seconds: upload material, choose objective, begin.</p>
             <div className="mt-4 grid grid-cols-3 gap-2 rounded-lg border border-primary-100 bg-primary-50 p-2 text-xs font-semibold text-primary-700">
-              <div className="rounded-md bg-white p-2 text-center">1. Carica materiale</div>
-              <div className="rounded-md bg-white p-2 text-center">2. Scegli obiettivo</div>
-              <div className="rounded-md bg-white p-2 text-center">3. Inizia orale</div>
+              <div className="rounded-md bg-white p-2 text-center">1. Upload material</div>
+              <div className="rounded-md bg-white p-2 text-center">2. Choose objective</div>
+              <div className="rounded-md bg-white p-2 text-center">3. Start oral exam</div>
             </div>
           </div>
 
           {error && (
             <div className="bg-error-50 border border-error-200 rounded-lg p-4 mb-6 text-error-700 flex items-start gap-3 animate-slide-up">
               <span className="text-xl mt-1">⚠️</span>
-              <div>{error.includes('Please paste') ? 'Per favore incolla testo o carica un PDF' : error.includes('Content must') ? 'Il contenuto deve essere almeno 20 caratteri' : error}</div>
+              <div>{error}</div>
             </div>
           )}
 
@@ -353,9 +353,9 @@ export default function InterrogoPage() {
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-2xl">📚</span>
-                <h2 className="text-2xl font-bold text-gray-900">1. Il Tuo Materiale di Studio</h2>
+                <h2 className="text-2xl font-bold text-gray-900">1. Your Study Material</h2>
               </div>
-              <p className="text-gray-600">Scegli come caricare il tuo contenuto</p>
+              <p className="text-gray-600">Choose how to load your content</p>
             </div>
 
             <div className="space-y-4">
@@ -369,7 +369,7 @@ export default function InterrogoPage() {
                       : 'border-transparent text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  📝 Incolla Testo
+                  📝 Paste Text
                 </button>
                 <button
                   onClick={() => setInputMethod('pdf')}
@@ -379,7 +379,7 @@ export default function InterrogoPage() {
                       : 'border-transparent text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  📄 Carica PDF
+                  📄 Upload PDF
                 </button>
               </div>
 
@@ -389,17 +389,17 @@ export default function InterrogoPage() {
                   <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder="Incolla il tuo materiale di studio qui... (minimo 20 caratteri)"
+                    placeholder="Paste your study material here... (minimum 20 characters)"
                     className="w-full h-48 p-4 border-2 border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none transition-all resize-none font-mono text-sm"
                   />
                   {content && (
                     <div className="mt-3 flex items-center justify-between bg-primary-50 p-3 rounded-lg">
                       <span className="text-sm text-primary-700">
-                        ✓ {content.length} caratteri caricati
+                        ✓ {content.length} characters loaded
                       </span>
                       {content.length < 20 && (
                         <span className="text-xs text-warning-600">
-                          Servono almeno 20 caratteri
+                          At least 20 characters required
                         </span>
                       )}
                     </div>
@@ -420,14 +420,14 @@ export default function InterrogoPage() {
                         <Upload className="w-8 h-8 text-primary-600" />
                       </div>
                       <p className="text-gray-900 font-semibold mb-1">
-                        {fileName ? `✓ ${fileName}` : 'Clicca per caricare un PDF'}
+                        {fileName ? `✓ ${fileName}` : 'Click to upload a PDF'}
                       </p>
                       <p className="text-sm text-gray-500">Max 10MB • Un file</p>
                     </label>
                   </div>
                   {content && (
                     <div className="mt-3 bg-success-50 p-3 rounded-lg text-sm text-success-700">
-                      ✓ PDF elaborato: {content.length} caratteri estratti
+                      ✓ PDF processed: {content.length} characters extracted
                     </div>
                   )}
                 </div>
@@ -437,8 +437,8 @@ export default function InterrogoPage() {
                 <div className="rounded-lg border border-secondary-200 bg-secondary-50 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="font-semibold text-secondary-800">📘 Modalità manuale scolastico</p>
-                      <p className="text-xs text-secondary-700">Estrai indice capitoli, definizioni, formule e date dal materiale.</p>
+                      <p className="font-semibold text-secondary-800">📘 Manual indexing mode</p>
+                      <p className="text-xs text-secondary-700">Extract chapters, definitions, formulas, and dates from the material.</p>
                     </div>
                     <Button
                       variant="outline"
@@ -450,34 +450,34 @@ export default function InterrogoPage() {
                           const index = await apiService.buildManualIndex(content);
                           setManualIndex(index);
                         } catch {
-                          setError('Impossibile generare l\'indice semantico del manuale');
+                          setError('Unable to generate semantic manual index');
                         } finally {
                           setIsBuildingManualIndex(false);
                         }
                       }}
                     >
-                      Genera Indice
+                      Generate Index
                     </Button>
                   </div>
 
                   {manualIndex?.summary && (
                     <div className="mt-3 space-y-3 text-xs">
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        <div className="rounded-md bg-white p-2">Capitoli: <span className="font-bold">{manualIndex.summary.chapterCount}</span></div>
-                        <div className="rounded-md bg-white p-2">Definizioni: <span className="font-bold">{manualIndex.summary.definitionCount}</span></div>
-                        <div className="rounded-md bg-white p-2">Formule: <span className="font-bold">{manualIndex.summary.formulaCount}</span></div>
-                        <div className="rounded-md bg-white p-2">Date: <span className="font-bold">{manualIndex.summary.dateCount}</span></div>
+                        <div className="rounded-md bg-white p-2">Chapters: <span className="font-bold">{manualIndex.summary.chapterCount}</span></div>
+                        <div className="rounded-md bg-white p-2">Definitions: <span className="font-bold">{manualIndex.summary.definitionCount}</span></div>
+                        <div className="rounded-md bg-white p-2">Formulas: <span className="font-bold">{manualIndex.summary.formulaCount}</span></div>
+                        <div className="rounded-md bg-white p-2">Dates: <span className="font-bold">{manualIndex.summary.dateCount}</span></div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div className="rounded-md bg-white p-2">
-                          <p className="font-semibold text-gray-800 mb-1">Capitoli rilevati</p>
+                          <p className="font-semibold text-gray-800 mb-1">Detected chapters</p>
                           {(manualIndex.chapters || []).slice(0, 3).map((c: any, idx: number) => (
                             <p key={idx} className="text-gray-600">• {c.title} <span className="text-gray-400">({c.citation})</span></p>
                           ))}
                         </div>
                         <div className="rounded-md bg-white p-2">
-                          <p className="font-semibold text-gray-800 mb-1">Chunk semantici</p>
+                          <p className="font-semibold text-gray-800 mb-1">Semantic chunks</p>
                           {(manualIndex.chunks || []).slice(0, 3).map((c: any) => (
                             <p key={c.id} className="text-gray-600">• conf {Math.round((c.confidence || 0) * 100)}% • {c.citation}</p>
                           ))}
@@ -495,54 +495,54 @@ export default function InterrogoPage() {
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-2xl">⚙️</span>
-                <h2 className="text-2xl font-bold text-gray-900">2. Impostazioni Esame</h2>
+                <h2 className="text-2xl font-bold text-gray-900">2. Exam Settings</h2>
               </div>
-              <p className="text-gray-600">Configura come vuoi essere interrogato</p>
+              <p className="text-gray-600">Configure how you want to be tested</p>
             </div>
 
             <div className="space-y-6">
               <div className="rounded-lg border border-primary-100 bg-primary-50 p-3 text-sm text-primary-700">
-                📌 Argomento rilevato automaticamente dal materiale caricato (PDF o testo).
+                📌 Topic is automatically detected from your uploaded material (PDF or text).
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-gray-700 mb-3 block">🎯 Obiettivo della sessione</label>
+                <label className="text-sm font-semibold text-gray-700 mb-3 block">🎯 Session objective</label>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <button
-                    onClick={() => setObjective('ripasso')}
+                    onClick={() => setObjective('review')}
                     className={`rounded-lg border-2 p-3 text-sm font-medium transition-all ${
-                      objective === 'ripasso'
+                      objective === 'review'
                         ? 'border-primary-500 bg-primary-50 text-primary-700'
                         : 'border-gray-200 text-gray-700'
                     }`}
                   >
-                    Ripasso mirato
+                    Targeted review
                   </button>
                   <button
-                    onClick={() => setObjective('verifica')}
+                    onClick={() => setObjective('assessment')}
                     className={`rounded-lg border-2 p-3 text-sm font-medium transition-all ${
-                      objective === 'verifica'
+                      objective === 'assessment'
                         ? 'border-primary-500 bg-primary-50 text-primary-700'
                         : 'border-gray-200 text-gray-700'
                     }`}
                   >
-                    Verifica pre-interrogazione
+                    Pre-exam assessment
                   </button>
                   <button
-                    onClick={() => setObjective('recupero')}
+                    onClick={() => setObjective('recovery')}
                     className={`rounded-lg border-2 p-3 text-sm font-medium transition-all ${
-                      objective === 'recupero'
+                      objective === 'recovery'
                         ? 'border-primary-500 bg-primary-50 text-primary-700'
                         : 'border-gray-200 text-gray-700'
                     }`}
                   >
-                    Recupero lacune
+                    Gap recovery
                   </button>
                 </div>
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-gray-700 mb-3 block">🧭 Modalità interrogazione</label>
+                <label className="text-sm font-semibold text-gray-700 mb-3 block">🧭 Exam mode</label>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <button
                     onClick={() => setExamMode('standard')}
@@ -552,7 +552,7 @@ export default function InterrogoPage() {
                         : 'border-gray-200 text-gray-700'
                     }`}
                   >
-                    Standard (7+ domande)
+                    Standard (7+ questions)
                   </button>
                   <button
                     onClick={() => setExamMode('extended')}
@@ -562,7 +562,7 @@ export default function InterrogoPage() {
                         : 'border-gray-200 text-gray-700'
                     }`}
                   >
-                    Estesa (9+ domande)
+                    Extended (9+ questions)
                   </button>
                   <button
                     onClick={() => setExamMode('deep')}
@@ -572,7 +572,7 @@ export default function InterrogoPage() {
                         : 'border-gray-200 text-gray-700'
                     }`}
                   >
-                    Deep dive (12+ domande)
+                    Deep dive (12+ questions)
                   </button>
                 </div>
               </div>
@@ -581,7 +581,7 @@ export default function InterrogoPage() {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-sm font-semibold text-gray-700">
-                    ⚡ Livello di Difficoltà
+                    ⚡ Difficulty Level
                   </label>
                   <span className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full font-bold text-sm">
                     {difficulty}/10
@@ -597,15 +597,15 @@ export default function InterrogoPage() {
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
                   />
                   <div className="flex justify-between text-xs text-gray-500">
-                    <span>Facile</span>
-                    <span>Difficile</span>
+                    <span>Easy</span>
+                    <span>Hard</span>
                   </div>
                   <p className="text-xs text-gray-600">
                     {difficulty <= 3
-                      ? 'Domande fondamentali e controllo basi.'
+                      ? 'Fundamental questions and baseline checks.'
                       : difficulty <= 7
-                        ? 'Domande analitiche con collegamenti.'
-                        : 'Domande avanzate, confronto critico e casi limite.'}
+                        ? 'Analytical questions with conceptual links.'
+                        : 'Advanced questions, critical comparisons, and edge cases.'}
                   </p>
                 </div>
               </div>
@@ -613,7 +613,7 @@ export default function InterrogoPage() {
               {/* Teacher Personality */}
               <div>
                 <label className="text-sm font-semibold text-gray-700 mb-3 block">
-                  👨‍🏫 Personalità del Professore
+                  👨‍🏫 Teacher Personality
                 </label>
                 <div className="grid grid-cols-3 gap-3">
                   <button
@@ -625,8 +625,8 @@ export default function InterrogoPage() {
                     }`}
                   >
                     <div className="text-2xl mb-2">😤</div>
-                    <div>Rigoroso</div>
-                    <div className="text-xs text-gray-600 mt-1">Esigente e severo</div>
+                    <div>Strict</div>
+                    <div className="text-xs text-gray-600 mt-1">Demanding and rigorous</div>
                   </button>
                   <button
                     onClick={() => setPersonality('supportive')}
@@ -637,8 +637,8 @@ export default function InterrogoPage() {
                     }`}
                   >
                     <div className="text-2xl mb-2">😊</div>
-                    <div>Incoraggiante</div>
-                    <div className="text-xs text-gray-600 mt-1">Supportivo e paziente</div>
+                    <div>Supportive</div>
+                    <div className="text-xs text-gray-600 mt-1">Patient and encouraging</div>
                   </button>
                   <button
                     onClick={() => setPersonality('socratic')}
@@ -649,8 +649,8 @@ export default function InterrogoPage() {
                     }`}
                   >
                     <div className="text-2xl mb-2">🧠</div>
-                    <div>Socratico</div>
-                    <div className="text-xs text-gray-600 mt-1">Domande guida progressive</div>
+                    <div>Socratic</div>
+                    <div className="text-xs text-gray-600 mt-1">Progressive guiding questions</div>
                   </button>
                 </div>
               </div>
@@ -664,7 +664,7 @@ export default function InterrogoPage() {
                 onClick={() => router.push('/dashboard')}
                 size="lg"
               >
-                Annulla
+                Cancel
               </Button>
               <Button
                 fullWidth={true}
@@ -673,7 +673,7 @@ export default function InterrogoPage() {
                 size="lg"
                 className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
               >
-                🚀 Inizia Interrogazione
+                🚀 Start Exam
               </Button>
             </div>
           </Card>
@@ -696,7 +696,7 @@ export default function InterrogoPage() {
           {/* Header with Session Info */}
           <div className="mb-6 animate-slide-up">
             <Button variant="ghost" onClick={() => router.push('/dashboard')} className="mb-4">
-              ← Torna al Dashboard
+              ← Back to Dashboard
             </Button>
             <div className="flex items-center justify-between">
               <div>
@@ -704,15 +704,15 @@ export default function InterrogoPage() {
                   {session.topic}
                 </h1>
                 <div className="flex items-center gap-3 text-sm text-gray-600">
-                  <span>⚡ Livello {session.difficulty}/10</span>
+                  <span>⚡ Level {session.difficulty}/10</span>
                   <span>•</span>
-                  <span>{session.personality === 'strict' ? '😤 Professore Rigoroso' : '😊 Professore Incoraggiante'}</span>
+                  <span>{session.personality === 'strict' ? '😤 Strict Teacher' : '😊 Supportive Teacher'}</span>
                 </div>
                 {isQuickTestMode && (
                   <div className="mt-3 rounded-lg border border-primary-200 bg-primary-50 p-3">
                     <div className="mb-2 flex items-center justify-between text-xs font-semibold text-primary-700">
-                      <span>⚡ Prova Veloce</span>
-                      <span>Domanda {quickTestCurrentQuestion}/3</span>
+                      <span>⚡ Quick Test</span>
+                      <span>Question {quickTestCurrentQuestion}/3</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-primary-100">
                       <div
@@ -725,8 +725,8 @@ export default function InterrogoPage() {
                 {!isQuickTestMode && (
                   <div className="mt-3 rounded-lg border border-secondary-200 bg-secondary-50 p-3">
                     <div className="mb-2 flex items-center justify-between text-xs font-semibold text-secondary-700">
-                      <span>🎯 Interrogazione Vera</span>
-                      <span>Domanda {standardCurrentQuestion}/{standardTotalQuestions}</span>
+                      <span>🎯 Full Exam</span>
+                      <span>Question {standardCurrentQuestion}/{standardTotalQuestions}</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-secondary-100">
                       <div
@@ -744,7 +744,7 @@ export default function InterrogoPage() {
                 size="lg"
                 className="whitespace-nowrap"
               >
-                Termina Esame
+                End Exam
               </Button>
             </div>
           </div>
@@ -820,7 +820,7 @@ export default function InterrogoPage() {
                       handleSendMessage();
                     }
                   }}
-                  placeholder="Digita la tua risposta... (Premi Invio per inviare, Shift+Invio per nuova riga)"
+                  placeholder="Type your answer... (Press Enter to send, Shift+Enter for newline)"
                   disabled={isLoading}
                   className="flex-1"
                 />
@@ -831,7 +831,7 @@ export default function InterrogoPage() {
                   variant="outline"
                   className="whitespace-nowrap"
                 >
-                  Non lo so
+                  I don't know
                 </Button>
                 <Button
                   onClick={handleSendMessage}
@@ -847,7 +847,7 @@ export default function InterrogoPage() {
 
           {/* Chat Tips */}
           <div className="text-center text-sm text-gray-600">
-            <p>💡 Consiglio: Dai risposte dettagliate per migliori feedback</p>
+            <p>💡 Tip: Give detailed answers for better feedback</p>
           </div>
         </div>
       </div>
@@ -868,8 +868,8 @@ export default function InterrogoPage() {
           {/* Header Section */}
           <div className="text-center mb-12 animate-slide-up">
             <div className="text-7xl mb-4">🎉</div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-3">Esame Completato!</h1>
-            <p className="text-xl text-gray-600">Ecco il tuo rapporto di valutazione dettagliato</p>
+            <h1 className="text-5xl font-bold text-gray-900 mb-3">Exam Completed!</h1>
+            <p className="text-xl text-gray-600">Here is your detailed evaluation report</p>
           </div>
 
           {/* Main Score Card */}
@@ -879,7 +879,7 @@ export default function InterrogoPage() {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-primary-100/20 to-success-100/20 opacity-0 hover:opacity-100 transition-opacity"></div>
             <div className="relative z-10">
-                <p className="text-gray-600 text-lg mb-3">Il Tuo Voto</p>
+                <p className="text-gray-600 text-lg mb-3">Your Score</p>
               <div className="text-center">
                 <div className="text-8xl font-bold mb-2">
                   <span
@@ -896,9 +896,9 @@ export default function InterrogoPage() {
                   <span className="text-3xl text-gray-400">/10</span>
                 </div>
                 <p className="text-2xl font-semibold text-gray-900 mt-4">
-                  {results.score >= 8 && '🏆 Prestazione Eccellente!'}
-                  {results.score >= 6 && results.score < 8 && '👍 Buon Lavoro!'}
-                  {results.score < 6 && '💪 Continua a Praticare!'}
+                  {results.score >= 8 && '🏆 Excellent Performance!'}
+                  {results.score >= 6 && results.score < 8 && '👍 Good Job!'}
+                  {results.score < 6 && '💪 Keep Practicing!'}
                 </p>
               </div>
             </div>
@@ -906,7 +906,7 @@ export default function InterrogoPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             <Card variant="elevated" className="border-0 p-6 bg-success-50/60">
-              <h3 className="text-lg font-bold text-success-700 mb-3">Cosa hai fatto bene</h3>
+              <h3 className="text-lg font-bold text-success-700 mb-3">What you did well</h3>
               <ul className="space-y-2 text-sm text-gray-700">
                 {(results.strengths || []).slice(0, 3).map((item: string, idx: number) => (
                   <li key={idx}>✓ {item}</li>
@@ -914,7 +914,7 @@ export default function InterrogoPage() {
               </ul>
             </Card>
             <Card variant="elevated" className="border-0 p-6 bg-warning-50/60">
-              <h3 className="text-lg font-bold text-warning-700 mb-3">Cosa ripassi oggi</h3>
+              <h3 className="text-lg font-bold text-warning-700 mb-3">What to review today</h3>
               <ul className="space-y-2 text-sm text-gray-700">
                 {(results.weaknesses || []).slice(0, 3).map((item: string, idx: number) => (
                   <li key={idx}>• {item}</li>
@@ -922,7 +922,7 @@ export default function InterrogoPage() {
               </ul>
             </Card>
             <Card variant="elevated" className="border-0 p-6 bg-primary-50/60">
-              <h3 className="text-lg font-bold text-primary-700 mb-3">Test da fare domani</h3>
+              <h3 className="text-lg font-bold text-primary-700 mb-3">Tomorrow's practice</h3>
               <ul className="space-y-2 text-sm text-gray-700">
                 {(results.studyPlan || []).slice(0, 3).map((item: string, idx: number) => (
                   <li key={idx}>→ {item}</li>
@@ -942,7 +942,7 @@ export default function InterrogoPage() {
                 <div className="border-l-4 border-l-success-500 p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="text-2xl">✅</div>
-                    <h3 className="text-xl font-bold text-success-700">Punti di Forza</h3>
+                    <h3 className="text-xl font-bold text-success-700">Strengths</h3>
                   </div>
                   <ul className="space-y-3">
                     {results.strengths.slice(0, 3).map((strength: string, idx: number) => (
@@ -965,7 +965,7 @@ export default function InterrogoPage() {
                 <div className="border-l-4 border-l-warning-500 p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="text-2xl">⚠️</div>
-                    <h3 className="text-xl font-bold text-warning-700">Aree da Migliorare</h3>
+                    <h3 className="text-xl font-bold text-warning-700">Areas to Improve</h3>
                   </div>
                   <ul className="space-y-3">
                     {results.weaknesses.slice(0, 3).map((weakness: string, idx: number) => (
@@ -988,7 +988,7 @@ export default function InterrogoPage() {
                 <div className="border-l-4 border-l-primary-500 p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="text-2xl">💡</div>
-                    <h3 className="text-xl font-bold text-primary-700">Suggerimenti</h3>
+                    <h3 className="text-xl font-bold text-primary-700">Suggestions</h3>
                   </div>
                   <ul className="space-y-3">
                     {results.suggestions.slice(0, 3).map((suggestion: string, idx: number) => (
@@ -1005,7 +1005,7 @@ export default function InterrogoPage() {
 
           {results.rubric?.criteria?.length > 0 && (
             <Card variant="elevated" className="mb-12 border-0 shadow-lg p-6 animate-slide-up">
-              <h3 className="text-2xl font-bold text-gray-900 mb-5">📐 Rubrica di Valutazione</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-5">📐 Evaluation Rubric</h3>
               <div className="space-y-5">
                 {results.rubric.criteria.map((criterion: any, idx: number) => (
                   <div key={idx} className="rounded-lg border border-gray-200 bg-white p-4">
@@ -1019,8 +1019,8 @@ export default function InterrogoPage() {
                         style={{ width: `${Math.min(100, criterion.score * 10)}%` }}
                       ></div>
                     </div>
-                    <p className="text-sm text-gray-700"><span className="font-semibold">Perché:</span> {criterion.reason}</p>
-                    <p className="mt-1 text-sm text-gray-600"><span className="font-semibold">Evidenza:</span> {criterion.evidence}</p>
+                    <p className="text-sm text-gray-700"><span className="font-semibold">Why:</span> {criterion.reason}</p>
+                    <p className="mt-1 text-sm text-gray-600"><span className="font-semibold">Evidence:</span> {criterion.evidence}</p>
                   </div>
                 ))}
               </div>
@@ -1029,7 +1029,7 @@ export default function InterrogoPage() {
 
           {results.studyPlan?.length > 0 && (
             <Card variant="elevated" className="mb-12 border-0 shadow-lg p-6 animate-slide-up">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">🗓️ Piano di Ripasso Automatico</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">🗓️ Automatic Study Plan</h3>
               <ul className="space-y-3">
                 {results.studyPlan.map((step: string, idx: number) => (
                   <li key={idx} className="flex items-start gap-3 text-gray-700">
@@ -1096,7 +1096,7 @@ export default function InterrogoPage() {
               className="sm:flex-1 border-primary-300 text-primary-700 hover:bg-primary-50"
             >
               <Download className="w-5 h-5 mr-2" />
-              📥 Scarica PDF
+              📥 Download PDF
             </Button>
             <Button
               onClick={() => router.push('/dashboard')}
@@ -1104,14 +1104,14 @@ export default function InterrogoPage() {
               variant="outline"
               className="sm:flex-1"
             >
-              📊 Bacheca
+              📊 Dashboard
             </Button>
             <Button
               onClick={handleRestartSession}
               size="lg"
               className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 sm:flex-1"
             >
-              🚀 Nuovo Esame
+              🚀 New Exam
             </Button>
           </div>
         </div>

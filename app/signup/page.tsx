@@ -29,23 +29,23 @@ export default function SignupPage() {
     const newErrors: Record<string, string> = {};
 
     if (!formData.email) {
-      newErrors.email = 'Email richiesto';
+      newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Inserisci una email valida';
+      newErrors.email = 'Please enter a valid email';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password richiesta';
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'La password deve essere almeno 6 caratteri';
+      newErrors.password = 'Password must be at least 6 characters';
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Le password non corrispondono';
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     if (!formData.name) {
-      newErrors.name = 'Nome richiesto';
+      newErrors.name = 'Name is required';
     }
 
     setErrors(newErrors);
@@ -97,7 +97,7 @@ export default function SignupPage() {
           href="/"
           className="mb-8 inline-flex items-center gap-1 text-sm text-primary-600 hover:text-primary-700 transition-colors"
         >
-          ← Torna alla Home
+          ← Back to Home
         </Link>
 
         <Card variant="elevated" size="lg" className="animate-slide-up shadow-xl">
@@ -109,10 +109,13 @@ export default function SignupPage() {
               </span>
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">
-              Crea il Tuo Account
+              Create Your Account
             </h1>
             <p className="text-gray-600 text-center">
-              Inizia a dominare gli esami orali italiani con feedback AI
+              Start practicing oral exams with real-time AI feedback
+            </p>
+            <p className="text-xs text-center text-gray-500 mt-3">
+              Free plan: up to 10 exams/month. Pro Monthly: €3.99/month.
             </p>
           </div>
 
@@ -125,7 +128,7 @@ export default function SignupPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5 mb-8">
             <Input
-              label="Nome Completo"
+              label="Full Name"
               type="text"
               placeholder="Carlo Rossi"
               value={formData.name}
@@ -135,7 +138,7 @@ export default function SignupPage() {
             />
 
             <Input
-              label="Indirizzo Email"
+              label="Email Address"
               type="email"
               placeholder="you@example.com"
               value={formData.email}
@@ -153,12 +156,12 @@ export default function SignupPage() {
                 setFormData({ ...formData, password: e.target.value })
               }
               error={errors.password}
-              helperText="Almeno 6 caratteri"
+              helperText="At least 6 characters"
               size="lg"
             />
 
             <Input
-              label="Conferma Password"
+              label="Confirm Password"
               type="password"
               placeholder="••••••••"
               value={formData.confirmPassword}
@@ -170,38 +173,38 @@ export default function SignupPage() {
             />
 
             <div>
-              <label className="block mb-2 text-sm font-semibold text-secondary-700">Tipo account</label>
+              <label className="block mb-2 text-sm font-semibold text-secondary-700">Account type</label>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   className={`rounded-md border p-2 text-sm font-medium ${formData.role === 'student' ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-gray-200 text-gray-700'}`}
                   onClick={() => setFormData({ ...formData, role: 'student' })}
                 >
-                  Studente
+                  Student
                 </button>
                 <button
                   type="button"
                   className={`rounded-md border p-2 text-sm font-medium ${formData.role === 'tutor' ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-gray-200 text-gray-700'}`}
                   onClick={() => setFormData({ ...formData, role: 'tutor' })}
                 >
-                  Tutor/Docente
+                  Tutor/Teacher
                 </button>
               </div>
             </div>
 
             <Input
-              label="Organizzazione (opzionale)"
+              label="Organization (optional)"
               type="text"
-              placeholder="es. Liceo Galilei"
+              placeholder="e.g. High School Galileo"
               value={formData.organization}
               onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
               size="lg"
             />
 
             <Input
-              label="Classe (opzionale)"
+              label="Class (optional)"
               type="text"
-              placeholder="es. 3A"
+              placeholder="e.g. 3A"
               value={formData.className}
               onChange={(e) => setFormData({ ...formData, className: e.target.value })}
               size="lg"
@@ -214,14 +217,14 @@ export default function SignupPage() {
               disabled={isLoading}
               className="gap-2"
             >
-              {isLoading ? 'Creazione account...' : 'Crea Account'}
+              {isLoading ? 'Creating account...' : 'Create Account'}
               {!isLoading && <ArrowRight className="w-4 h-4" />}
             </Button>
           </form>
 
           <div className="pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-600 text-center mb-4">
-              Hai già un account?
+              Already have an account?
             </p>
             <Button
               fullWidth={true}
@@ -230,17 +233,17 @@ export default function SignupPage() {
               type="button"
               onClick={() => router.push('/login')}
             >
-              Accedi
+              Login
             </Button>
           </div>
         </Card>
 
         <p className="text-center text-xs text-gray-500 mt-6">
-          Registrandoti, accetti i nostri{' '}
+          By signing up, you agree to our{' '}
           <Link href="/terms" className="text-primary-600 hover:underline">
-            Termini
+            Terms
           </Link>
-          {' '}e la{' '}
+          {' '}and{' '}
           <Link href="/privacy" className="text-primary-600 hover:underline">
             Privacy Policy
           </Link>

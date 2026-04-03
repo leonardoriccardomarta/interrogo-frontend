@@ -248,6 +248,26 @@ class ApiService {
     const response = await this.client.delete('/auth/delete-account');
     return response.data;
   }
+
+  async getBillingStatus() {
+    const response = await this.client.get('/auth/billing-status');
+    return response.data;
+  }
+
+  async createBillingCheckout(successUrl: string, cancelUrl: string) {
+    const response = await this.client.post('/auth/billing/checkout', {
+      successUrl,
+      cancelUrl,
+    });
+    return response.data;
+  }
+
+  async createBillingPortal(returnUrl: string) {
+    const response = await this.client.post('/auth/billing/portal', {
+      returnUrl,
+    });
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();

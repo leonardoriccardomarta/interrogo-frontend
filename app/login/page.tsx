@@ -73,7 +73,7 @@ export default function LoginPage() {
           href="/"
           className="mb-8 inline-flex items-center gap-1 text-sm text-primary-600 hover:text-primary-700 transition-colors"
         >
-          ← Torna alla Home
+          ← Back to Home
         </Link>
 
         <Card variant="elevated" size="lg" className="animate-slide-up shadow-xl">
@@ -85,10 +85,10 @@ export default function LoginPage() {
               </span>
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">
-              Bentornato
+              Welcome back
             </h1>
             <p className="text-gray-600 text-center">
-              Accedi al tuo account e continua a dominare l'italiano
+              Sign in and continue your oral exam training
             </p>
           </div>
 
@@ -101,7 +101,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <Input
-              label="Indirizzo Email"
+              label="Email Address"
               type="email"
               placeholder="you@example.com"
               value={formData.email}
@@ -127,14 +127,14 @@ export default function LoginPage() {
               disabled={isLoading}
               className="gap-2"
             >
-              {isLoading ? 'Accesso in corso...' : 'Accedi'}
+              {isLoading ? 'Signing in...' : 'Sign in'}
               {!isLoading && <ArrowRight className="w-4 h-4" />}
             </Button>
           </form>
 
           <div className="mt-6 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-600 text-center mb-4">
-              Non hai un account?
+              Don't have an account?
             </p>
             <Button
               fullWidth={true}
@@ -143,17 +143,17 @@ export default function LoginPage() {
               type="button"
               onClick={() => router.push('/signup')}
             >
-              Crea Account
+              Create Account
             </Button>
           </div>
         </Card>
 
         <p className="text-center text-xs text-gray-500 mt-6">
-          Accedendo, accetti i nostri{' '}
+          By signing in, you agree to our{' '}
           <Link href="/terms" className="text-primary-600 hover:underline">
-            Termini
+            Terms
           </Link>
-          {' '}e la{' '}
+          {' '}and{' '}
           <Link href="/privacy" className="text-primary-600 hover:underline">
             Privacy Policy
           </Link>

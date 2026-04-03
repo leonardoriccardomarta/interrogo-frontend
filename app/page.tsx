@@ -57,19 +57,19 @@ export default function Home() {
             {/* Badge */}
             <div className="mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100/50 border border-primary-200/80">
               <Sparkles className="w-4 h-4 text-primary-600" />
-              <span className="text-sm font-semibold text-primary-700">Insegnamento Potenziato da AI</span>
+              <span className="text-sm font-semibold text-primary-700">AI-Powered Oral Exam Training</span>
             </div>
 
             {/* Main Headline */}
             <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight animate-slide-up">
-              Domina le
+              Master Your
               <br />
-              <span className="text-gradient">Interrogazioni Italiane</span>
+              <span className="text-gradient">Oral Exams</span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-              Pratica con un insegnante italiano potenziato da AI. Ricevi feedback in tempo reale, identifica i tuoi punti di forza e migliora le tue debolezze con sessioni di pratica personalizzate.
+              Practice with an AI teacher. Get real-time feedback, identify strengths, and improve weak points with personalized practice sessions.
             </p>
 
             {/* CTA Buttons */}
@@ -81,14 +81,14 @@ export default function Home() {
                     onClick={() => router.push('/signup')}
                     className="gap-2"
                   >
-                    Inizia Gratis <ArrowRight className="w-4 h-4" />
+                    Start Free <ArrowRight className="w-4 h-4" />
                   </Button>
                   <Button
                     variant="outline"
                     size="lg"
                     onClick={() => router.push('/login')}
                   >
-                    Accedi
+                    Login
                   </Button>
                 </>
               ) : (
@@ -98,7 +98,7 @@ export default function Home() {
                     onClick={() => router.push('/interrogo')}
                     className="gap-2"
                   >
-                    Inizia l'Esame <ArrowRight className="w-4 h-4" />
+                    Start Exam <ArrowRight className="w-4 h-4" />
                   </Button>
                   <Button
                     variant="outline"
@@ -118,10 +118,10 @@ export default function Home() {
           <div className="container-max">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Funzionalità Potenti
+                Powerful Features
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Tutto ciò di cui hai bisogno per dominare gli esami orali italiani
+                Everything you need to improve oral exam performance
               </p>
             </div>
 
@@ -129,20 +129,20 @@ export default function Home() {
               {[
                 {
                   icon: BookOpen,
-                  title: 'Argomenti Personalizzati',
-                  description: 'Carica qualsiasi PDF o testo. Pratica con il tuo materiale di studio e contenuti personalizzati.',
+                  title: 'Custom Topics',
+                  description: 'Upload any PDF or text. Practice directly on your own study material.',
                   color: 'from-primary-500 to-primary-600',
                 },
                 {
                   icon: Brain,
-                  title: 'AI Intelligente',
-                  description: 'Insegnante italiano nativo potenziato da AI avanzata. Adatta la difficoltà al tuo livello.',
+                  title: 'Smart AI Teacher',
+                  description: 'An advanced AI teacher that adapts question difficulty to your current level.',
                   color: 'from-secondary-500 to-secondary-600',
                 },
                 {
                   icon: TrendingUp,
-                  title: 'Feedback Dettagliato',
-                  description: 'Ottieni una valutazione completa con voto, punti di forza e aree specifiche di miglioramento.',
+                  title: 'Detailed Feedback',
+                  description: 'Receive full scoring, strengths, and specific improvement areas after each session.',
                   color: 'from-success-500 to-success-600',
                 },
               ].map((feature, idx) => {
@@ -174,19 +174,19 @@ export default function Home() {
           <div className="container-max">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Come Funziona
+                How It Works
               </h2>
               <p className="text-xl text-gray-600">
-                Semplice, efficace e potente
+                Simple, effective, and practical
               </p>
             </div>
 
             <div className="grid md:grid-cols-4 gap-8">
               {[
-                { num: '1', title: 'Carica Contenuto', description: 'Incolla testo o carica un PDF sul tuo argomento' },
-                { num: '2', title: 'Imposta Opzioni', description: 'Scegli difficoltà e personalità dell\'insegnante' },
-                { num: '3', title: 'Pratica', description: 'Rispondi naturalmente alle domande dell\'AI' },
-                { num: '4', title: 'Ottieni Voto', description: 'Ricevi valutazione dettagliata e prossimi passi' },
+                { num: '1', title: 'Upload Content', description: 'Paste text or upload a PDF for your topic' },
+                { num: '2', title: 'Set Options', description: 'Choose difficulty and teacher personality' },
+                { num: '3', title: 'Practice', description: 'Answer AI questions naturally and progressively' },
+                { num: '4', title: 'Get Score', description: 'Receive detailed evaluation and next steps' },
               ].map((step, idx) => (
                 <div key={idx} className="relative">
                   <div className="flex flex-col items-center text-center">
@@ -216,17 +216,17 @@ export default function Home() {
 
           <div className="container-max relative z-10">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">
-              Perché Scegliere Interrogo?
+              Why Choose Interrogo?
             </h2>
 
             <div className="grid md:grid-cols-2 gap-8">
               {[
-                'Sessioni di pratica illimitate senza restrizioni',
-                'Livelli di difficoltà personalizzati che si adattano a te',
-                'Feedback completo su grammatica e pronuncia',
-                'Monitora i tuoi progressi su più sessioni',
-                'Pratica ovunque, in qualsiasi momento su qualsiasi dispositivo',
-                'Insegnante AI esperto con accento italiano nativo',
+                'Unlimited practice sessions',
+                'Adaptive difficulty based on your progress',
+                'Actionable feedback after every exam',
+                'Track improvement across sessions',
+                'Practice anywhere on any device',
+                'Consistent and structured teacher behavior',
               ].map((benefit, idx) => (
                 <div key={idx} className="flex items-start gap-4 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
                   <CheckCircle2 className="w-6 h-6 flex-shrink-0 text-white mt-0.5" />
@@ -242,10 +242,10 @@ export default function Home() {
           <div className="container-max text-center">
             <div className="max-w-2xl mx-auto">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                Pronto a Superare i Tuoi Esami Italiani?
+                Ready to Level Up Your Oral Exams?
               </h2>
               <p className="text-xl text-gray-600 mb-10">
-                Unisciti a migliaia di studenti che hanno migliorato i loro voti agli esami orali italiani con Interrogo.
+                Join students improving exam performance with realistic oral simulations.
               </p>
 
               {!isAuthenticated ? (
@@ -254,7 +254,7 @@ export default function Home() {
                   onClick={() => router.push('/signup')}
                   className="gap-2"
                 >
-                  Inizia Gratis <ArrowRight className="w-4 h-4" />
+                  Start Free <ArrowRight className="w-4 h-4" />
                 </Button>
               ) : (
                 <Button
@@ -262,7 +262,7 @@ export default function Home() {
                   onClick={() => router.push('/interrogo')}
                   className="gap-2"
                 >
-                  Inizia il Tuo Primo Esame <ArrowRight className="w-4 h-4" />
+                  Start Your First Exam <ArrowRight className="w-4 h-4" />
                 </Button>
               )}
             </div>

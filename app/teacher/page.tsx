@@ -26,7 +26,7 @@ export default function TeacherDashboardPage() {
 
         const user = await apiService.getCurrentUser();
         if (!['tutor', 'admin'].includes(String(user?.role || ''))) {
-          setError('Accesso riservato a docenti/tutor. Seleziona ruolo tutor in registrazione o aggiorna il tuo account.');
+          setError('Teacher access only. Select tutor role during signup or update your account role.');
           setIsLoading(false);
           return;
         }
@@ -40,7 +40,7 @@ export default function TeacherDashboardPage() {
         setModerationAudit(audit);
         setSlaAlerts(alerts);
       } catch (err: any) {
-        setError(err?.response?.data?.error || 'Impossibile caricare la dashboard docente');
+        setError(err?.response?.data?.error || 'Unable to load teacher dashboard');
       } finally {
         setIsLoading(false);
       }
@@ -61,7 +61,7 @@ export default function TeacherDashboardPage() {
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch {
-      setError('Export report non riuscito');
+      setError('Report export failed');
     }
   };
 
@@ -78,14 +78,14 @@ export default function TeacherDashboardPage() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900">🏫 Dashboard Docente</h1>
-            <p className="text-gray-600">Vista classe, studenti a rischio e argomenti critici.</p>
+            <h1 className="text-4xl font-bold text-gray-900">🏫 Teacher Dashboard</h1>
+            <p className="text-gray-600">Class view, at-risk students, and critical topics.</p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" onClick={() => router.push('/dashboard')}>Torna alla bacheca</Button>
+            <Button variant="outline" onClick={() => router.push('/dashboard')}>Back to dashboard</Button>
             <Button onClick={handleExport}>
               <Download className="w-4 h-4 mr-2" />
-              Esporta Report CSV
+              Export CSV Report
             </Button>
           </div>
         </div>
@@ -101,21 +101,21 @@ export default function TeacherDashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <Card className="p-6 border-0">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-gray-600">Studenti Totali</p>
+                  <p className="text-gray-600">Total Students</p>
                   <Users className="w-5 h-5 text-primary-600" />
                 </div>
                 <p className="text-3xl font-bold text-primary-700">{data.kpis?.totalStudents ?? 0}</p>
               </Card>
               <Card className="p-6 border-0">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-gray-600">Sessioni Totali</p>
+                  <p className="text-gray-600">Total Sessions</p>
                   <BarChart3 className="w-5 h-5 text-secondary-600" />
                 </div>
                 <p className="text-3xl font-bold text-secondary-700">{data.kpis?.totalSessions ?? 0}</p>
               </Card>
               <Card className="p-6 border-0">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-gray-600">Tasso “Non lo so”</p>
+                  <p className="text-gray-600">"I don't know" rate</p>
                   <AlertTriangle className="w-5 h-5 text-warning-600" />
                 </div>
                 <p className="text-3xl font-bold text-warning-700">{Math.round((data.kpis?.dontKnowRate ?? 0) * 100)}%</p>
@@ -125,7 +125,7 @@ export default function TeacherDashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <Card className="p-6 border-0">
                 <h2 className="text-xl font-bold text-gray-900 mb-3">Moderation Audit</h2>
-                <p className="text-sm text-gray-600 mb-4">Eventi di blocco contenuto registrati.</p>
+                <p className="text-sm text-gray-600 mb-4">Recorded content-blocking events.</p>
                 <p className="text-3xl font-bold text-rose-700 mb-3">{moderationAudit?.total ?? 0}</p>
                 <div className="space-y-2 text-xs text-gray-600 max-h-40 overflow-auto">
                   {(moderationAudit?.recent || []).slice(0, 5).map((evt: any, idx: number) => (
@@ -139,9 +139,9 @@ export default function TeacherDashboardPage() {
 
               <Card className="p-6 border-0">
                 <h2 className="text-xl font-bold text-gray-900 mb-3">SLA Alerts</h2>
-                <p className="text-sm text-gray-600 mb-4">Stato monitoraggio operativo corrente.</p>
+                <p className="text-sm text-gray-600 mb-4">Current operational monitoring status.</p>
                 {(slaAlerts?.alerts || []).length === 0 ? (
-                  <p className="text-lg font-semibold text-emerald-700">Nessun alert attivo</p>
+                  <p className="text-lg font-semibold text-emerald-700">No active alerts</p>
                 ) : (
                   <div className="space-y-2">
                     {(slaAlerts?.alerts || []).map((alert: any) => (
@@ -157,13 +157,13 @@ export default function TeacherDashboardPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               <Card className="p-6 border-0">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Classi (profilo reale)</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Classes (real profile)</h2>
                 <div className="space-y-3">
                   {(data.classOverview || []).map((row: any) => (
                     <div key={row.className} className="rounded-lg border border-gray-200 p-3 flex items-center justify-between">
                       <div>
                         <p className="font-semibold text-gray-900">{row.className}</p>
-                        <p className="text-sm text-gray-600">{row.organization} • {row.students} studenti • {row.sessions} sessioni</p>
+                        <p className="text-sm text-gray-600">{row.organization} • {row.students} students • {row.sessions} sessions</p>
                       </div>
                       <p className="font-bold text-primary-700">{row.avgScore ?? '--'}/10</p>
                     </div>
@@ -172,13 +172,13 @@ export default function TeacherDashboardPage() {
               </Card>
 
               <Card className="p-6 border-0">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Argomenti più deboli</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Weakest topics</h2>
                 <div className="space-y-3">
                   {(data.weakTopics || []).slice(0, 10).map((topic: any, idx: number) => (
                     <div key={`${topic.topic}-${idx}`} className="rounded-lg border border-gray-200 p-3 flex items-center justify-between">
                       <div>
                         <p className="font-semibold text-gray-900">{topic.topic}</p>
-                        <p className="text-sm text-gray-600">{topic.exams} prove</p>
+                        <p className="text-sm text-gray-600">{topic.exams} exams</p>
                       </div>
                       <p className="font-bold text-error-600">{topic.avgScore ?? '--'}/10</p>
                     </div>
@@ -188,16 +188,16 @@ export default function TeacherDashboardPage() {
             </div>
 
             <Card className="p-6 border-0">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Studenti da supportare (ordine per media)</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Students needing support (sorted by average)</h2>
               <div className="overflow-auto">
                 <table className="min-w-full text-sm">
                   <thead>
                     <tr className="text-left text-gray-500 border-b border-gray-200">
-                      <th className="py-2 pr-4">Studente</th>
-                      <th className="py-2 pr-4">Classe</th>
-                      <th className="py-2 pr-4">Media</th>
-                      <th className="py-2 pr-4">Prove</th>
-                      <th className="py-2 pr-4">Non lo so</th>
+                      <th className="py-2 pr-4">Student</th>
+                      <th className="py-2 pr-4">Class</th>
+                      <th className="py-2 pr-4">Average</th>
+                      <th className="py-2 pr-4">Exams</th>
+                      <th className="py-2 pr-4">"I don't know"</th>
                     </tr>
                   </thead>
                   <tbody>

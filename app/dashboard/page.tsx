@@ -32,8 +32,8 @@ export default function Dashboard() {
   const [error, setError] = useState('');
   const [isQuickTestLoading, setIsQuickTestLoading] = useState(false);
   const [analytics, setAnalytics] = useState<any>(null);
-  const [retentionPolicy, setRetentionPolicy] = useState<any>(null);
-  const [slaSnapshot, setSlaSnapshot] = useState<any>(null);
+  const [billing, setBilling] = useState<any>(null);
+  const [isBillingLoading, setIsBillingLoading] = useState(false);
   const [isQuickTestModalOpen, setIsQuickTestModalOpen] = useState(false);
   const [quickTestTopic, setQuickTestTopic] = useState('');
   const [quickTestDifficulty, setQuickTestDifficulty] = useState(5);
@@ -64,14 +64,10 @@ export default function Dashboard() {
         }
 
         try {
-          const [policy, sla] = await Promise.all([
-            apiService.getRetentionPolicy(),
-            apiService.getSlaSnapshot(),
-          ]);
-          setRetentionPolicy(policy);
-          setSlaSnapshot(sla);
-        } catch (governanceError) {
-          console.warn('Governance snapshot unavailable:', governanceError);
+          const billingData = await apiService.getBillingStatus();
+          setBilling(billingData);
+        } catch (billingError) {
+          console.warn('Billing snapshot unavailable:', billingError);
         }
       } catch (err: any) {
         setError('Failed to load dashboard');
@@ -95,7 +91,7 @@ export default function Dashboard() {
 
   const handleStartQuickTest = async () => {
     if (!quickTestTopic.trim()) {
-      setError('Inserisci un argomento per la prova veloce');
+      setError('Please enter a topic for quick test');
       return;
     }
 
@@ -112,9 +108,38 @@ export default function Dashboard() {
       }
     } catch (err: any) {
       console.error('Quick test error:', err);
-      setError('Errore nell\'avvio della prova veloce');
+      setError(err?.response?.data?.error || 'Failed to start quick test');
     } finally {
       setIsQuickTestLoading(false);
+    }
+  };
+
+  const openCheckout = async () => {
+    try {
+      setIsBillingLoading(true);
+      const origin = window.location.origin;
+      const checkout = await apiService.createBillingCheckout(`${origin}/dashboard`, `${origin}/dashboard`);
+      if (checkout?.url) {
+        window.location.href = checkout.url;
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.error || 'Failed to open checkout');
+    } finally {
+      setIsBillingLoading(false);
+    }
+  };
+
+  const openPortal = async () => {
+    try {
+      setIsBillingLoading(true);
+      const portal = await apiService.createBillingPortal(window.location.href);
+      if (portal?.url) {
+        window.location.href = portal.url;
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.error || 'Failed to open billing portal');
+    } finally {
+      setIsBillingLoading(false);
     }
   };
 
@@ -166,13 +191,20 @@ export default function Dashboard() {
                   Learning Command Center
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                  🎓 Il Tuo Dashboard
+                  🎓 Your Dashboard
                 </h1>
                 <p className="text-gray-600 text-lg">
-                  Bentornato, <span className="font-semibold">{user?.firstName || user?.email || 'Studente'}</span>! Qui controlli progresso, KPI e prossime mosse.
+                  Welcome back, <span className="font-semibold">{user?.firstName || user?.email || 'Student'}</span>! Track progress, KPIs, and your next moves.
                 </p>
               </div>
               <div className="flex gap-3 flex-wrap justify-end">
+              <Button
+                onClick={() => router.push('/')}
+                size="lg"
+                variant="outline"
+              >
+                Home
+              </Button>
               {user?.role === 'tutor' && (
                 <Button
                   onClick={() => router.push('/teacher')}
@@ -180,7 +212,7 @@ export default function Dashboard() {
                   variant="outline"
                   className="border-primary-300 text-primary-700 hover:bg-primary-50"
                 >
-                  🏫 Vista Docente
+                  🏫 Teacher View
                 </Button>
               )}
               <Button
@@ -189,7 +221,7 @@ export default function Dashboard() {
                 className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
               >
                 <Plus className="w-5 h-5 mr-2" />
-                Nuovo Esame
+                New Exam
               </Button>
               <Button
                 onClick={handleQuickTest}
@@ -198,11 +230,11 @@ export default function Dashboard() {
                 className="bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800 text-white"
               >
                 <Lightning className="w-5 h-5 mr-2" />
-                ⚡ Prova Veloce
+                ⚡ Quick Test
               </Button>
               <Button variant="outline" onClick={handleLogout} size="lg">
                 <LogOut className="w-5 h-5 mr-2" />
-                Esci
+                Logout
               </Button>
               </div>
             </div>
@@ -214,7 +246,7 @@ export default function Dashboard() {
                 <BookOpen className="w-5 h-5 text-primary-600" />
                 <div>
                   <p className="text-sm font-semibold text-gray-900">Focus consigliato</p>
-                  <p className="text-xs text-gray-600">Ripasso mirato su gap principali</p>
+                  <p className="text-xs text-gray-600">Targeted review on your biggest gaps</p>
                 </div>
               </div>
             </Card>
@@ -222,8 +254,8 @@ export default function Dashboard() {
               <div className="flex items-center gap-3">
                 <Sparkles className="w-5 h-5 text-secondary-600" />
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">Modalità top</p>
-                  <p className="text-xs text-gray-600">Extended/Deep per simulazioni realistiche</p>
+                  <p className="text-sm font-semibold text-gray-900">Best mode</p>
+                  <p className="text-xs text-gray-600">Extended/Deep for realistic simulations</p>
                 </div>
               </div>
             </Card>
@@ -231,8 +263,8 @@ export default function Dashboard() {
               <div className="flex items-center gap-3">
                 <TrendingUp className="w-5 h-5 text-success-600" />
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">Obiettivo settimana</p>
-                  <p className="text-xs text-gray-600">Aumenta copertura fonte oltre il 40%</p>
+                  <p className="text-sm font-semibold text-gray-900">Weekly goal</p>
+                  <p className="text-xs text-gray-600">Increase source coverage above 40%</p>
                 </div>
               </div>
             </Card>
@@ -242,7 +274,7 @@ export default function Dashboard() {
         {error && (
           <div className="bg-error-50 border border-error-200 rounded-lg p-4 mb-8 text-error-700 flex items-start gap-3 animate-slide-up">
             <span className="text-xl mt-1">⚠️</span>
-            <div>{error === 'Failed to load dashboard' ? 'Errore nel caricamento del dashboard' : error}</div>
+            <div>{error}</div>
           </div>
         )}
 
@@ -258,12 +290,12 @@ export default function Dashboard() {
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-gray-600 font-medium">Esami Totali</h3>
+                    <h3 className="text-gray-600 font-medium">Total Exams</h3>
                     <Trophy className="w-5 h-5 text-primary-600" />
                   </div>
                   <p className="text-3xl font-bold text-primary-700">{totalExams}</p>
                   <p className="text-sm text-gray-600 mt-2">
-                    {completedExams} completati
+                    {completedExams} completed
                   </p>
                 </div>
               </div>
@@ -278,12 +310,12 @@ export default function Dashboard() {
                 <div className="absolute inset-0 bg-gradient-to-r from-success-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-gray-600 font-medium">Voto Medio</h3>
+                    <h3 className="text-gray-600 font-medium">Average Score</h3>
                     <TrendingUp className="w-5 h-5 text-success-600" />
                   </div>
                   <p className="text-3xl font-bold text-success-700">{avgScore}/10</p>
                   <p className="text-sm text-gray-600 mt-2">
-                    {completedExams > 0 ? 'Basato su ' + completedExams + ' esame/i' : 'Nessun esame completato'}
+                    {completedExams > 0 ? 'Based on ' + completedExams + ' exam(s)' : 'No completed exams yet'}
                   </p>
                 </div>
               </div>
@@ -298,11 +330,11 @@ export default function Dashboard() {
                 <div className="absolute inset-0 bg-gradient-to-r from-secondary-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-gray-600 font-medium">Risposte Date</h3>
+                    <h3 className="text-gray-600 font-medium">Answers Submitted</h3>
                     <Zap className="w-5 h-5 text-secondary-600" />
                   </div>
                   <p className="text-3xl font-bold text-secondary-700">{totalStudentAnswers}</p>
-                  <p className="text-sm text-gray-600 mt-2">Messaggi studente</p>
+                  <p className="text-sm text-gray-600 mt-2">Student messages</p>
                 </div>
               </div>
             </Card>
@@ -316,10 +348,10 @@ export default function Dashboard() {
                 <div className="absolute inset-0 bg-gradient-to-r from-warning-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-gray-600 font-medium">Sequenza</h3>
+                    <h3 className="text-gray-600 font-medium">Momentum</h3>
                     <Clock className="w-5 h-5 text-warning-600" />
                   </div>
-                  <p className="text-3xl font-bold text-warning-700">Bravissimo!</p>
+                  <p className="text-3xl font-bold text-warning-700">Keep going!</p>
                   <p className="text-sm text-gray-600 mt-2">Take another exam</p>
                 </div>
               </div>
@@ -331,57 +363,63 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 animate-slide-up">
             <Card variant="elevated" className="border-0 bg-gradient-to-br from-blue-50 to-blue-100/50">
               <div className="p-6">
-                <h3 className="text-gray-600 font-medium mb-2">Tempo Medio Risposta AI</h3>
+                <h3 className="text-gray-600 font-medium mb-2">Average AI Response Time</h3>
                 <p className="text-3xl font-bold text-blue-700">{avgResponseTime ?? '--'}s</p>
-                <p className="text-sm text-gray-600 mt-2">SLA percepita durante l'orale</p>
+                <p className="text-sm text-gray-600 mt-2">Measured across your sessions</p>
               </div>
             </Card>
 
             <Card variant="elevated" className="border-0 bg-gradient-to-br from-rose-50 to-rose-100/50">
               <div className="p-6">
-                <h3 className="text-gray-600 font-medium mb-2">Tasso "Non lo so"</h3>
+                <h3 className="text-gray-600 font-medium mb-2">"I don't know" Rate</h3>
                 <p className="text-3xl font-bold text-rose-700">{(dontKnowRate * 100).toFixed(0)}%</p>
-                <p className="text-sm text-gray-600 mt-2">Indicatore sicurezza espositiva</p>
+                <p className="text-sm text-gray-600 mt-2">Confidence indicator</p>
               </div>
             </Card>
 
             <Card variant="elevated" className="border-0 bg-gradient-to-br from-emerald-50 to-emerald-100/50">
               <div className="p-6">
-                <h3 className="text-gray-600 font-medium mb-2">Trend 4 Settimane</h3>
+                <h3 className="text-gray-600 font-medium mb-2">4-Week Trend</h3>
                 <p className="text-3xl font-bold text-emerald-700">{latestWeeklyScore ?? '--'}/10</p>
-                <p className="text-sm text-gray-600 mt-2">Ultima media settimanale</p>
+                <p className="text-sm text-gray-600 mt-2">Latest weekly average</p>
               </div>
             </Card>
           </div>
         )}
 
-        {(retentionPolicy || slaSnapshot) && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 animate-slide-up">
-            {retentionPolicy && (
-              <Card variant="elevated" className="border-0 bg-gradient-to-br from-indigo-50 to-indigo-100/50">
-                <div className="p-6">
-                  <h3 className="text-gray-600 font-medium mb-2">Privacy & Retention</h3>
-                  <p className="text-2xl font-bold text-indigo-700">{retentionPolicy.sessionRetentionDays} giorni</p>
-                  <p className="text-sm text-gray-600 mt-2">Conservazione sessioni didattiche</p>
+        {billing && (
+          <div className="mb-12 animate-slide-up">
+            <Card variant="elevated" className="border-0 bg-gradient-to-br from-indigo-50 to-indigo-100/50">
+              <div className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <h3 className="text-gray-700 font-semibold">Subscription Plan</h3>
+                  <p className="text-2xl font-bold text-indigo-700 mt-1">
+                    {billing.isPro ? 'Pro Monthly (€3.99/mo)' : 'Free Plan'}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {billing.isPro ? 'Unlimited exams and quick tests' : 'Up to 10 exams per month'}
+                  </p>
                 </div>
-              </Card>
-            )}
-            {slaSnapshot && (
-              <Card variant="elevated" className="border-0 bg-gradient-to-br from-teal-50 to-teal-100/50">
-                <div className="p-6">
-                  <h3 className="text-gray-600 font-medium mb-2">SLA Snapshot</h3>
-                  <p className="text-2xl font-bold text-teal-700">{(Number(slaSnapshot.successRate || 0) * 100).toFixed(1)}%</p>
-                  <p className="text-sm text-gray-600 mt-2">Success rate API da ultimo avvio</p>
+                <div className="flex gap-3">
+                  {!billing.isPro ? (
+                    <Button isLoading={isBillingLoading} onClick={openCheckout}>
+                      Upgrade to Pro
+                    </Button>
+                  ) : (
+                    <Button variant="outline" isLoading={isBillingLoading} onClick={openPortal}>
+                      Manage Subscription
+                    </Button>
+                  )}
                 </div>
-              </Card>
-            )}
+              </div>
+            </Card>
           </div>
         )}
 
         {/* Advanced Statistics Section */}
         {sessions.length > 0 && (
           <div className="mb-12 animate-slide-up">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">📊 Statistiche Avanzate</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">📊 Advanced Statistics</h2>
             <AdvancedStats sessions={sessions} user={user} analytics={analytics} />
           </div>
         )}
@@ -397,7 +435,7 @@ export default function Dashboard() {
                 <div className="text-6xl mb-4">📚</div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">No Exams Yet</h2>
                 <p className="text-gray-600 mb-8">
-                  Inizia la tua prima interrogazione per avviare il percorso di miglioramento.
+                  Start your first exam session to begin improving.
                 </p>
               </div>
               <Button
@@ -406,12 +444,12 @@ export default function Dashboard() {
                 className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
               >
                 <Zap className="w-5 h-5 mr-2" />
-                Fai la tua prima interrogazione
+                Take your first exam
               </Button>
             </Card>
           ) : (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Interrogazioni Recenti</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Exams</h2>
               <div className="space-y-4">
                 {sessions.map((session, idx) => (
                   <Card
@@ -506,8 +544,8 @@ export default function Dashboard() {
             <div className="p-6 md:p-7">
               <div className="mb-5 flex items-start justify-between gap-3">
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">⚡ Avvia Prova Veloce</h3>
-                  <p className="text-sm text-gray-600 mt-1">Setup rapido, look professionale, risultato immediato.</p>
+                  <h3 className="text-2xl font-bold text-gray-900">⚡ Start Quick Test</h3>
+                  <p className="text-sm text-gray-600 mt-1">Fast setup, immediate feedback.</p>
                 </div>
                 <button
                   className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
@@ -515,7 +553,7 @@ export default function Dashboard() {
                     setIsQuickTestModalOpen(false);
                     setQuickTestTopic('');
                   }}
-                  aria-label="Chiudi"
+                  aria-label="Close"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -523,15 +561,15 @@ export default function Dashboard() {
 
               <div className="space-y-5">
                 <Input
-                  label="Argomento"
+                  label="Topic"
                   value={quickTestTopic}
                   onChange={(e) => setQuickTestTopic(e.target.value)}
-                  placeholder="es. Moto uniformemente accelerato"
+                  placeholder="e.g. Newton's second law"
                 />
 
                 <div>
                   <div className="mb-2 flex items-center justify-between">
-                    <label className="text-sm font-semibold text-gray-700">Difficoltà</label>
+                    <label className="text-sm font-semibold text-gray-700">Difficulty</label>
                     <span className="rounded-full bg-primary-100 px-3 py-1 text-xs font-bold text-primary-700">{quickTestDifficulty}/10</span>
                   </div>
                   <input
@@ -545,12 +583,12 @@ export default function Dashboard() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-semibold text-gray-700 mb-2 block">Personalità docente</label>
+                  <label className="text-sm font-semibold text-gray-700 mb-2 block">Teacher personality</label>
                   <div className="grid grid-cols-3 gap-2">
                     {([
-                      { key: 'supportive', label: '😊 Supportivo' },
-                      { key: 'strict', label: '😤 Rigoroso' },
-                      { key: 'socratic', label: '🧠 Socratico' },
+                      { key: 'supportive', label: '😊 Supportive' },
+                      { key: 'strict', label: '😤 Strict' },
+                      { key: 'socratic', label: '🧠 Socratic' },
                     ] as const).map((opt) => (
                       <button
                         key={opt.key}
@@ -575,7 +613,7 @@ export default function Dashboard() {
                   fullWidth={true}
                   onClick={() => setIsQuickTestModalOpen(false)}
                 >
-                  Annulla
+                  Cancel
                 </Button>
                 <Button
                   fullWidth={true}
@@ -583,7 +621,7 @@ export default function Dashboard() {
                   onClick={handleStartQuickTest}
                   className="bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800"
                 >
-                  Inizia Prova Veloce
+                  Start Quick Test
                 </Button>
               </div>
             </div>
