@@ -52,11 +52,6 @@ export default function Footer() {
 
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-xs text-gray-500">© 2026 Interrogo AI. All rights reserved.</p>
-          <div className="mt-4 md:mt-0 flex gap-4">
-            <a href="mailto:support@interrogo.ai" className="text-xs text-gray-500 hover:text-primary-600 transition">
-              Contact
-            </a>
-          </div>
         </div>
       </div>
     </footer>

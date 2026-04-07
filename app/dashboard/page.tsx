@@ -100,7 +100,7 @@ export default function Dashboard() {
       const response = await apiService.startQuickTest(quickTestTopic.trim(), quickTestDifficulty, quickTestPersonality);
       
       if (response.sessionId) {
-        // Salva session info
+        // Store quick test session id for resume flow
         localStorage.setItem('quick_test_session_id', response.sessionId);
         setIsQuickTestModalOpen(false);
         setQuickTestTopic('');
@@ -191,7 +191,7 @@ export default function Dashboard() {
                   Learning Command Center
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                  🎓 Your Dashboard
+                  Your Dashboard
                 </h1>
                 <p className="text-gray-600 text-lg">
                   Welcome back, <span className="font-semibold">{user?.firstName || user?.email || 'Student'}</span>! Track progress, KPIs, and your next moves.
@@ -212,7 +212,7 @@ export default function Dashboard() {
                   variant="outline"
                   className="border-primary-300 text-primary-700 hover:bg-primary-50"
                 >
-                  🏫 Teacher View
+                  Teacher View
                 </Button>
               )}
               <Button
@@ -230,7 +230,7 @@ export default function Dashboard() {
                 className="bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800 text-white"
               >
                 <Lightning className="w-5 h-5 mr-2" />
-                ⚡ Quick Test
+                Quick Test
               </Button>
               <Button variant="outline" onClick={handleLogout} size="lg">
                 <LogOut className="w-5 h-5 mr-2" />
@@ -245,7 +245,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-3">
                 <BookOpen className="w-5 h-5 text-primary-600" />
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">Focus consigliato</p>
+                  <p className="text-sm font-semibold text-gray-900">Recommended Focus</p>
                   <p className="text-xs text-gray-600">Targeted review on your biggest gaps</p>
                 </div>
               </div>
@@ -419,7 +419,7 @@ export default function Dashboard() {
         {/* Advanced Statistics Section */}
         {sessions.length > 0 && (
           <div className="mb-12 animate-slide-up">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">📊 Advanced Statistics</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Advanced Statistics</h2>
             <AdvancedStats sessions={sessions} user={user} analytics={analytics} />
           </div>
         )}
@@ -466,24 +466,28 @@ export default function Dashboard() {
                             {session.topic}
                           </h3>
                           <span className="text-sm px-3 py-1 rounded-full bg-primary-100 text-primary-700 font-medium">
-                            {session.personality === 'strict' ? '😤 Strict' : '😊 Supportive'}
+                            {session.personality === 'strict'
+                              ? 'Strict'
+                              : session.personality === 'socratic'
+                                ? 'Socratic'
+                                : 'Supportive'}
                           </span>
                         </div>
                         <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-2">
                           <span className="flex items-center gap-1">
-                            📅 {new Date(session.createdAt).toLocaleDateString()}
+                            Date: {new Date(session.createdAt).toLocaleDateString()}
                           </span>
                           <span className="flex items-center gap-1">
-                            💬 {session.studentAnswerCount ?? Math.floor(session._count.messages / 2)} risposte
+                            Answers: {session.studentAnswerCount ?? Math.floor(session._count.messages / 2)}
                           </span>
                           <span className="flex items-center gap-1">
-                            ⚡ Level {session.difficulty}/10
+                            Difficulty: {session.difficulty}/10
                           </span>
                         </div>
                         {session.finalScore === null && (
                           <div className="inline-block">
                             <span className="text-sm px-3 py-1 rounded-full bg-warning-100 text-warning-700 font-medium">
-                              ⏳ In Progress
+                              In Progress
                             </span>
                           </div>
                         )}
@@ -509,10 +513,10 @@ export default function Dashboard() {
                           </div>
                           <p className="text-xs text-gray-500 mt-2">
                             {session.finalScore >= 8
-                              ? '🎉 Excellent'
+                              ? 'Excellent'
                               : session.finalScore >= 6
-                                ? '👍 Good'
-                                : '💪 Keep going'}
+                                ? 'Good'
+                                : 'Keep going'}
                           </p>
                         </div>
                       ) : (
@@ -544,7 +548,7 @@ export default function Dashboard() {
             <div className="p-6 md:p-7">
               <div className="mb-5 flex items-start justify-between gap-3">
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">⚡ Start Quick Test</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">Start Quick Test</h3>
                   <p className="text-sm text-gray-600 mt-1">Fast setup, immediate feedback.</p>
                 </div>
                 <button
@@ -586,9 +590,9 @@ export default function Dashboard() {
                   <label className="text-sm font-semibold text-gray-700 mb-2 block">Teacher personality</label>
                   <div className="grid grid-cols-3 gap-2">
                     {([
-                      { key: 'supportive', label: '😊 Supportive' },
-                      { key: 'strict', label: '😤 Strict' },
-                      { key: 'socratic', label: '🧠 Socratic' },
+                      { key: 'supportive', label: 'Supportive' },
+                      { key: 'strict', label: 'Strict' },
+                      { key: 'socratic', label: 'Socratic' },
                     ] as const).map((opt) => (
                       <button
                         key={opt.key}

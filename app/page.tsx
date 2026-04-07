@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
-import { Card, CardBody, CardHeader } from '@/components/ui/Card';
+import { Card } from '@/components/ui/Card';
 import { Header, Footer } from '@/components/ui';
 import { BookOpen, Brain, TrendingUp, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 import { apiService } from '@/lib/api';
@@ -221,7 +221,7 @@ export default function Home() {
 
             <div className="grid md:grid-cols-2 gap-8">
               {[
-                'Unlimited practice sessions',
+                'Start free with 10 exams per month',
                 'Adaptive difficulty based on your progress',
                 'Actionable feedback after every exam',
                 'Track improvement across sessions',
@@ -233,6 +233,49 @@ export default function Home() {
                   <span className="text-lg text-white">{benefit}</span>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="section-padding bg-white">
+          <div className="container-max">
+            <div className="text-center mb-14">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Plans & Pricing</h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Choose the plan that fits your study rhythm. You can upgrade any time from the dashboard.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              <Card variant="elevated" size="lg" className="border border-gray-200 bg-gradient-to-b from-white to-gray-50">
+                <div className="p-8">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">Free</p>
+                  <p className="mt-2 text-4xl font-bold text-gray-900">EUR0</p>
+                  <p className="mt-1 text-sm text-gray-600">Perfect to start and validate your preparation.</p>
+                  <ul className="mt-6 space-y-3 text-sm text-gray-700">
+                    <li>10 exam sessions per month</li>
+                    <li>Quick Test mode included</li>
+                    <li>Session history and core analytics</li>
+                  </ul>
+                </div>
+              </Card>
+
+              <Card variant="elevated" size="lg" className="border-2 border-primary-300 bg-gradient-to-b from-primary-50 to-white shadow-xl">
+                <div className="p-8">
+                  <div className="inline-flex items-center rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700">
+                    Most Popular
+                  </div>
+                  <p className="mt-3 text-sm font-semibold uppercase tracking-wide text-primary-700">Pro</p>
+                  <p className="mt-2 text-4xl font-bold text-gray-900">EUR3.99<span className="text-lg text-gray-600">/month</span></p>
+                  <p className="mt-1 text-sm text-gray-600">Built for consistent weekly preparation.</p>
+                  <ul className="mt-6 space-y-3 text-sm text-gray-700">
+                    <li>Unlimited exams and quick tests</li>
+                    <li>Advanced performance analytics</li>
+                    <li>Priority access to new improvements</li>
+                  </ul>
+                </div>
+              </Card>
             </div>
           </div>
         </section>
