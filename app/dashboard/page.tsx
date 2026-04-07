@@ -394,7 +394,7 @@ export default function Dashboard() {
                 <div>
                   <h3 className="text-gray-700 font-semibold">Subscription Plan</h3>
                   <p className="text-2xl font-bold text-indigo-700 mt-1">
-                    {billing.isPro ? 'Pro Monthly (€3.99/mo)' : 'Free Plan'}
+                    {billing.isPro ? 'Pro Monthly (€9.99/mo)' : 'Free Plan'}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     {billing.isPro ? 'Unlimited exams and quick tests' : 'Up to 10 exams per month'}

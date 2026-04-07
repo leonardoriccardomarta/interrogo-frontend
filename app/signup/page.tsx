@@ -115,7 +115,7 @@ export default function SignupPage() {
               Start practicing oral exams with real-time AI feedback
             </p>
             <p className="text-xs text-center text-gray-500 mt-3">
-              Free plan: up to 10 exams/month. Pro Monthly: €3.99/month.
+              Free plan: up to 10 exams/month. Pro Monthly: €9.99/month.
             </p>
           </div>
 
