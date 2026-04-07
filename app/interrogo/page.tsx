@@ -422,7 +422,7 @@ export default function InterrogoPage() {
                       <p className="text-gray-900 font-semibold mb-1">
                         {fileName ? `✓ ${fileName}` : 'Click to upload a PDF'}
                       </p>
-                      <p className="text-sm text-gray-500">Max 10MB • Un file</p>
+                      <p className="text-sm text-gray-500">Max 10MB • Single file</p>
                     </label>
                   </div>
                   {content && (

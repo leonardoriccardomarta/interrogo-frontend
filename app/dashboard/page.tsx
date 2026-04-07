@@ -399,14 +399,19 @@ export default function Dashboard() {
                   <p className="text-sm text-gray-600 mt-1">
                     {billing.isPro ? 'Unlimited exams and quick tests' : 'Up to 10 exams per month'}
                   </p>
+                  {!billing.stripeReady && (
+                    <p className="text-xs text-amber-700 mt-2">
+                      Billing checkout is temporarily unavailable because Stripe is not configured on the server.
+                    </p>
+                  )}
                 </div>
                 <div className="flex gap-3">
                   {!billing.isPro ? (
-                    <Button isLoading={isBillingLoading} onClick={openCheckout}>
+                    <Button isLoading={isBillingLoading} onClick={openCheckout} disabled={!billing.stripeReady}>
                       Upgrade to Pro
                     </Button>
                   ) : (
-                    <Button variant="outline" isLoading={isBillingLoading} onClick={openPortal}>
+                    <Button variant="outline" isLoading={isBillingLoading} onClick={openPortal} disabled={!billing.stripeReady}>
                       Manage Subscription
                     </Button>
                   )}
@@ -432,7 +437,9 @@ export default function Dashboard() {
               className="text-center py-16 bg-gradient-to-br from-primary-50/50 to-secondary-50/50 border border-gray-200/50 shadow-lg"
             >
               <div className="mb-6">
-                <div className="text-6xl mb-4">📚</div>
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-100 text-primary-700">
+                  <BookOpen className="h-8 w-8" />
+                </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">No Exams Yet</h2>
                 <p className="text-gray-600 mb-8">
                   Start your first exam session to begin improving.

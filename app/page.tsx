@@ -90,6 +90,13 @@ export default function Home() {
                   >
                     Login
                   </Button>
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    View Plans
+                  </Button>
                 </>
               ) : (
                 <>
@@ -107,8 +114,30 @@ export default function Home() {
                   >
                     Dashboard
                   </Button>
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    View Plans
+                  </Button>
                 </>
               )}
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto text-left">
+              <div className="rounded-xl border border-gray-200 bg-white/70 backdrop-blur p-3">
+                <p className="text-xs text-gray-500">Mode coverage</p>
+                <p className="text-sm font-semibold text-gray-900">Standard, Extended, Deep, Quick Test</p>
+              </div>
+              <div className="rounded-xl border border-gray-200 bg-white/70 backdrop-blur p-3">
+                <p className="text-xs text-gray-500">Pricing transparency</p>
+                <p className="text-sm font-semibold text-gray-900">Free and Pro visible upfront</p>
+              </div>
+              <div className="rounded-xl border border-gray-200 bg-white/70 backdrop-blur p-3">
+                <p className="text-xs text-gray-500">Billing</p>
+                <p className="text-sm font-semibold text-gray-900">Secure Stripe checkout and portal</p>
+              </div>
             </div>
           </div>
         </section>
@@ -238,7 +267,7 @@ export default function Home() {
         </section>
 
         {/* Pricing Section */}
-        <section className="section-padding bg-white">
+        <section id="pricing" className="section-padding bg-white">
           <div className="container-max">
             <div className="text-center mb-14">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Plans & Pricing</h2>
