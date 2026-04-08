@@ -11,6 +11,7 @@ import { apiService } from '@/lib/api';
 export default function Home() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [billing, setBilling] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -20,9 +21,18 @@ export default function Home() {
         if (token) {
           const user = await apiService.getCurrentUser();
           setIsAuthenticated(!!user);
+          try {
+            const billingStatus = await apiService.getBillingStatus();
+            setBilling(billingStatus);
+          } catch (billingError) {
+            console.warn('Billing status unavailable:', billingError);
+          }
+        } else {
+          setBilling(null);
         }
       } catch (error) {
         localStorage.removeItem('auth_token');
+        setBilling(null);
       } finally {
         setIsLoading(false);
       }
@@ -38,6 +48,10 @@ export default function Home() {
       </div>
     );
   }
+
+  const currentPlan = billing?.isPro ? 'pro' : isAuthenticated ? 'free' : null;
+  const freePlanLabel = currentPlan === 'free' ? 'Current plan' : isAuthenticated ? 'Downgrade target' : 'Free';
+  const proPlanLabel = currentPlan === 'pro' ? 'Current plan' : 'Pro';
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -114,13 +128,9 @@ export default function Home() {
                   >
                     Dashboard
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="lg"
-                    onClick={() => router.push('/dashboard#billing')}
-                  >
-                    Upgrade Plan
-                  </Button>
+                  <div className="inline-flex items-center rounded-full border border-gray-200 bg-white/80 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
+                    Current plan: {currentPlan === 'pro' ? 'Pro' : 'Free'}
+                  </div>
                 </>
               )}
             </div>
@@ -279,9 +289,14 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               <Card variant="elevated" size="lg" className="border border-gray-200 bg-gradient-to-b from-white to-gray-50">
                 <div className="p-8">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">Free</p>
-                  <p className="mt-2 text-4xl font-bold text-gray-900">EUR0</p>
-                  <p className="mt-1 text-sm text-gray-600">Perfect to start and validate your preparation.</p>
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">Free</p>
+                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${currentPlan === 'free' ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-600'}`}>
+                      {freePlanLabel}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-4xl font-bold text-gray-900">Free</p>
+                  <p className="mt-1 text-sm text-gray-600">No monthly fee. Perfect to start and validate your preparation.</p>
                   <ul className="mt-6 space-y-3 text-sm text-gray-700">
                     <li>10 exam sessions per month</li>
                     <li>Quick Test mode included</li>
@@ -293,15 +308,20 @@ export default function Home() {
                     className="mt-6 w-full"
                     onClick={() => (isAuthenticated ? router.push('/dashboard#billing') : router.push('/signup'))}
                   >
-                    {isAuthenticated ? 'Upgrade Plan' : 'Start Free'}
+                    {isAuthenticated ? (currentPlan === 'free' ? 'Current plan' : 'Downgrade to Free') : 'Start Free'}
                   </Button>
                 </div>
               </Card>
 
               <Card variant="elevated" size="lg" className="border-2 border-primary-300 bg-gradient-to-b from-primary-50 to-white shadow-xl">
                 <div className="p-8">
-                  <div className="inline-flex items-center rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700">
-                    Most Popular
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="inline-flex items-center rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700">
+                      Most Popular
+                    </div>
+                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${currentPlan === 'pro' ? 'bg-primary-600 text-white' : 'bg-primary-100 text-primary-700'}`}>
+                      {proPlanLabel}
+                    </span>
                   </div>
                   <p className="mt-3 text-sm font-semibold uppercase tracking-wide text-primary-700">Pro</p>
                   <p className="mt-2 text-4xl font-bold text-gray-900">€9.99<span className="text-lg text-gray-600">/month</span></p>
@@ -316,7 +336,7 @@ export default function Home() {
                     className="mt-6 w-full"
                     onClick={() => (isAuthenticated ? router.push('/dashboard#billing') : router.push('/signup'))}
                   >
-                    {isAuthenticated ? 'Upgrade Plan' : 'Sign up to Upgrade'}
+                    {isAuthenticated ? (currentPlan === 'pro' ? 'Current plan' : 'Upgrade in dashboard') : 'Sign up to Upgrade'}
                   </Button>
                 </div>
               </Card>

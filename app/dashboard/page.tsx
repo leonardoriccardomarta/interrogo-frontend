@@ -426,26 +426,44 @@ export default function Dashboard() {
 
         {analytics && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 animate-slide-up">
-            <Card variant="elevated" className="border-0 bg-gradient-to-br from-blue-50 to-blue-100/50">
-              <div className="p-6">
-                <h3 className="text-gray-600 font-medium mb-2">Average AI Response Time</h3>
-                <p className="text-3xl font-bold text-blue-700">{avgResponseTime ?? '--'}s</p>
+            <Card
+              variant="elevated"
+              className="border border-gray-200 bg-white/90 overflow-hidden group hover:shadow-md transition-shadow duration-200"
+            >
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">Average AI Response Time</h3>
+                  <Clock className="w-5 h-5 text-primary-600" />
+                </div>
+                <p className="text-2xl font-bold text-gray-900">{avgResponseTime ?? '--'}s</p>
                 <p className="text-sm text-gray-600 mt-2">Measured across your sessions</p>
               </div>
             </Card>
 
-            <Card variant="elevated" className="border-0 bg-gradient-to-br from-rose-50 to-rose-100/50">
-              <div className="p-6">
-                <h3 className="text-gray-600 font-medium mb-2">"I don't know" Rate</h3>
-                <p className="text-3xl font-bold text-rose-700">{(dontKnowRate * 100).toFixed(0)}%</p>
+            <Card
+              variant="elevated"
+              className="border border-gray-200 bg-white/90 overflow-hidden group hover:shadow-md transition-shadow duration-200"
+            >
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">"I don't know" Rate</h3>
+                  <Zap className="w-5 h-5 text-secondary-600" />
+                </div>
+                <p className="text-2xl font-bold text-gray-900">{(dontKnowRate * 100).toFixed(0)}%</p>
                 <p className="text-sm text-gray-600 mt-2">Confidence indicator</p>
               </div>
             </Card>
 
-            <Card variant="elevated" className="border-0 bg-gradient-to-br from-emerald-50 to-emerald-100/50">
-              <div className="p-6">
-                <h3 className="text-gray-600 font-medium mb-2">4-Week Trend</h3>
-                <p className="text-3xl font-bold text-emerald-700">{latestWeeklyScore ?? '--'}/10</p>
+            <Card
+              variant="elevated"
+              className="border border-gray-200 bg-white/90 overflow-hidden group hover:shadow-md transition-shadow duration-200"
+            >
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">4-Week Trend</h3>
+                  <TrendingUp className="w-5 h-5 text-success-600" />
+                </div>
+                <p className="text-2xl font-bold text-gray-900">{latestWeeklyScore ?? '--'}/10</p>
                 <p className="text-sm text-gray-600 mt-2">Latest weekly average</p>
               </div>
             </Card>
