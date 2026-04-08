@@ -143,6 +143,14 @@ export default function Dashboard() {
     }
   };
 
+  const handlePlanAction = async () => {
+    if (billing?.isPro) {
+      await openPortal();
+      return;
+    }
+    await openCheckout();
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-secondary-100 relative overflow-hidden">
@@ -249,8 +257,8 @@ export default function Dashboard() {
                     <Lightning className="w-5 h-5 mr-2" />
                     Quick Test
                   </Button>
-                  <Button variant="outline" onClick={() => router.push('/dashboard#billing')} size="lg">
-                    Upgrade Plan
+                  <Button variant="outline" onClick={handlePlanAction} size="lg" isLoading={isBillingLoading}>
+                    {billing?.isPro ? 'Billing Portal' : 'Upgrade Plan'}
                   </Button>
                   {user?.role === 'tutor' && (
                     <Button
@@ -288,19 +296,19 @@ export default function Dashboard() {
                   <div className="mt-5 flex gap-3 flex-wrap">
                     {!billing?.isPro ? (
                       <Button
-                        onClick={() => router.push('/dashboard#billing')}
+                        onClick={handlePlanAction}
                         size="lg"
                         className="bg-primary-600 text-white hover:bg-primary-700 shadow-sm"
-                        disabled={!billing?.stripeReady}
+                        isLoading={isBillingLoading}
                       >
                         Upgrade Plan
                       </Button>
                     ) : (
                       <Button
-                        onClick={openPortal}
+                        onClick={handlePlanAction}
                         size="lg"
                         className="bg-primary-600 text-white hover:bg-primary-700 shadow-sm"
-                        disabled={!billing?.stripeReady || isBillingLoading}
+                        isLoading={isBillingLoading}
                       >
                         Billing Portal
                       </Button>
@@ -311,7 +319,7 @@ export default function Dashboard() {
                   </div>
                   {!billing?.stripeReady && (
                     <p className="mt-4 text-xs text-gray-500">
-                      Billing will activate once Stripe is connected in the environment.
+                      Billing is not fully configured on the server. If checkout fails, verify Stripe environment variables.
                     </p>
                   )}
                 </Card>

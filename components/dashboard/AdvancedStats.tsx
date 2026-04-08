@@ -8,6 +8,21 @@ interface AdvancedStatsProps {
 }
 
 export function AdvancedStats({ sessions, user, analytics }: AdvancedStatsProps) {
+  const translateCompetencyLabel = (label: string) => {
+    const normalized = String(label || '').trim().toLowerCase();
+    const map: Record<string, string> = {
+      'lessico disciplinare': 'Subject Vocabulary',
+      'collegamenti': 'Concept Linking',
+      'esposizione': 'Explanation Clarity',
+      'completezza': 'Completeness',
+      'accuratezza': 'Accuracy',
+      'rigore': 'Rigor',
+      'struttura': 'Structure',
+      'precisione': 'Precision',
+    };
+    return map[normalized] || label;
+  };
+
   const totalExams = sessions.length;
   const completedExams = sessions.filter(s => s.finalScore !== null).length;
   const avgScore = completedExams > 0
@@ -58,7 +73,7 @@ export function AdvancedStats({ sessions, user, analytics }: AdvancedStatsProps)
 
   const criterionAverages = Object.entries(criterionBuckets).map(([key, value]) => ({
     key,
-    label: value.label,
+    label: translateCompetencyLabel(value.label),
     avg: value.count > 0 ? value.total / value.count : 0,
   }));
 
@@ -178,7 +193,7 @@ export function AdvancedStats({ sessions, user, analytics }: AdvancedStatsProps)
                   <div className="flex items-center justify-between">
                     <p className="font-semibold text-gray-900">{topic.topic}</p>
                     <p className="text-sm font-bold text-error-600">
-                      {topic.weakestCriterion || 'Analyzing'}
+                      {translateCompetencyLabel(topic.weakestCriterion || '') || 'Analyzing'}
                     </p>
                   </div>
                   <div className="mt-2 text-xs text-gray-600 flex items-center justify-between">
@@ -200,7 +215,7 @@ export function AdvancedStats({ sessions, user, analytics }: AdvancedStatsProps)
               {competencyTimeline.slice(0, 6).map((criterion: any) => (
                 <div key={criterion.key} className="rounded-lg border border-gray-200 p-3">
                   <div className="mb-2 flex items-center justify-between">
-                    <p className="font-semibold text-gray-900">{criterion.label}</p>
+                    <p className="font-semibold text-gray-900">{translateCompetencyLabel(criterion.label)}</p>
                     <p className="text-xs text-gray-500">From 4 weeks ago to today</p>
                   </div>
                   <div className="grid grid-cols-4 gap-2">
