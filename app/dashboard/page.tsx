@@ -270,27 +270,27 @@ export default function Dashboard() {
               </div>
 
               <div className="space-y-4">
-                <Card className="border-0 bg-gradient-to-br from-primary-700 via-primary-600 to-secondary-700 text-white shadow-xl p-5">
+                <Card className="border border-gray-200 bg-white/95 shadow-xl p-5">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-white/70">Current Plan</p>
-                      <p className="mt-1 text-2xl font-bold">{billing?.isPro ? 'Pro Monthly' : 'Free Plan'}</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Plan & billing</p>
+                      <p className="mt-1 text-2xl font-bold text-gray-900">{billing?.isPro ? 'Pro Monthly' : 'Free Plan'}</p>
                     </div>
-                    <div className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white">
+                    <div className={`rounded-full px-3 py-1 text-sm font-semibold ${billing?.isPro ? 'bg-success-100 text-success-700' : 'bg-primary-100 text-primary-700'}`}>
                       {billing?.isPro ? '€9.99/mo' : '10 exams/mo'}
                     </div>
                   </div>
-                  <p className="mt-4 text-sm text-white/85">
+                  <p className="mt-4 text-sm text-gray-600">
                     {billing?.isPro
-                      ? 'Unlimited exams, quick tests, and the full billing portal are available.'
-                      : 'You can upgrade anytime to unlock unlimited sessions and billing management.'}
+                      ? 'Unlimited exams, quick tests, and billing portal access are active.'
+                      : 'Upgrade anytime to unlock unlimited sessions and billing management.'}
                   </p>
                   <div className="mt-5 flex gap-3 flex-wrap">
                     {!billing?.isPro ? (
                       <Button
                         onClick={() => router.push('/dashboard#billing')}
                         size="lg"
-                        className="bg-white text-primary-700 hover:bg-white/90 shadow-sm"
+                        className="bg-primary-600 text-white hover:bg-primary-700 shadow-sm"
                         disabled={!billing?.stripeReady}
                       >
                         Upgrade Plan
@@ -299,19 +299,19 @@ export default function Dashboard() {
                       <Button
                         onClick={openPortal}
                         size="lg"
-                        className="bg-white text-primary-700 hover:bg-white/90 shadow-sm"
+                        className="bg-primary-600 text-white hover:bg-primary-700 shadow-sm"
                         disabled={!billing?.stripeReady || isBillingLoading}
                       >
                         Billing Portal
                       </Button>
                     )}
-                    <Button variant="outline" onClick={() => router.push('/')} size="lg" className="border-white/30 text-white hover:bg-white/10">
+                    <Button variant="outline" onClick={() => router.push('/')} size="lg" className="border-gray-300 text-gray-700 hover:bg-gray-50">
                       Home
                     </Button>
                   </div>
                   {!billing?.stripeReady && (
-                    <p className="mt-4 text-xs text-white/75">
-                      Billing is not configured on the server yet.
+                    <p className="mt-4 text-xs text-gray-500">
+                      Billing will activate once Stripe is connected in the environment.
                     </p>
                   )}
                 </Card>
@@ -453,40 +453,6 @@ export default function Dashboard() {
                 <h3 className="text-gray-600 font-medium mb-2">4-Week Trend</h3>
                 <p className="text-3xl font-bold text-emerald-700">{latestWeeklyScore ?? '--'}/10</p>
                 <p className="text-sm text-gray-600 mt-2">Latest weekly average</p>
-              </div>
-            </Card>
-          </div>
-        )}
-
-        {billing && (
-          <div id="billing" className="mb-12 animate-slide-up">
-            <Card variant="elevated" className="border-0 bg-gradient-to-br from-indigo-50 to-indigo-100/50">
-              <div className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                  <h3 className="text-gray-700 font-semibold">Subscription Plan</h3>
-                  <p className="text-2xl font-bold text-indigo-700 mt-1">
-                    {billing.isPro ? 'Pro Monthly (€9.99/mo)' : 'Free Plan'}
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {billing.isPro ? 'Unlimited exams and quick tests' : 'Up to 10 exams per month'}
-                  </p>
-                  {!billing.stripeReady && (
-                    <p className="text-xs text-amber-700 mt-2">
-                      Billing checkout is temporarily unavailable because Stripe is not configured on the server.
-                    </p>
-                  )}
-                </div>
-                <div className="flex gap-3">
-                  {!billing.isPro ? (
-                    <Button isLoading={isBillingLoading} onClick={openCheckout} disabled={!billing.stripeReady} className="shadow-sm">
-                      Upgrade to Pro
-                    </Button>
-                  ) : (
-                    <Button variant="outline" isLoading={isBillingLoading} onClick={openPortal} disabled={!billing.stripeReady} className="shadow-sm">
-                      Manage Subscription
-                    </Button>
-                  )}
-                </div>
               </div>
             </Card>
           </div>
