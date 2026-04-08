@@ -5,9 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Header, Footer } from '@/components/ui';
-import { BookOpen, Brain, TrendingUp, Sparkles, CheckCircle2, ArrowRight, Zap, Target, BarChart3, Shield, Heart, MessageSquare, Users, Award } from 'lucide-react';
+import { BookOpen, Brain, TrendingUp, Sparkles, CheckCircle2, ArrowRight, Zap, Target, BarChart3, Shield, Heart, MessageSquare, Award } from 'lucide-react';
 import { apiService } from '@/lib/api';
-import LandingChatbot from '@/components/ui/LandingChatbot';
 
 export default function Home() {
   const router = useRouter();
@@ -138,16 +137,16 @@ export default function Home() {
 
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto text-left">
               <div className="rounded-xl border border-gray-200 bg-white/70 backdrop-blur p-3">
-                <p className="text-xs text-gray-500">Mode coverage</p>
-                <p className="text-sm font-semibold text-gray-900">Standard, Extended, Deep, Quick Test</p>
+                <p className="text-xs text-gray-500">Study flow</p>
+                <p className="text-sm font-semibold text-gray-900">Upload, pick a mode, and start practicing fast</p>
               </div>
               <div className="rounded-xl border border-gray-200 bg-white/70 backdrop-blur p-3">
-                <p className="text-xs text-gray-500">Pricing transparency</p>
-                <p className="text-sm font-semibold text-gray-900">Free and Pro visible upfront</p>
+                <p className="text-xs text-gray-500">AI feedback</p>
+                <p className="text-sm font-semibold text-gray-900">Scores, weak points, and next steps after each exam</p>
               </div>
               <div className="rounded-xl border border-gray-200 bg-white/70 backdrop-blur p-3">
-                <p className="text-xs text-gray-500">Billing</p>
-                <p className="text-sm font-semibold text-gray-900">Upgrade your plan after sign in</p>
+                <p className="text-xs text-gray-500">Plans</p>
+                <p className="text-sm font-semibold text-gray-900">Free to start, Pro at €9.99/month from dashboard</p>
               </div>
             </div>
           </div>
@@ -420,80 +419,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Success Stories & Social Proof Section */}
-        <section className="section-padding bg-white">
-          <div className="container-max">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Join Thousands of Successful Learners
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Real improvements from real students like you
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  name: 'Marco R.',
-                  role: 'Final Year Student',
-                  quote: 'Went from C average to B+ in just 3 weeks with consistent quick tests. The feedback is incredibly detailed.',
-                  rating: 5,
-                },
-                {
-                  name: 'Sofia P.',
-                  role: 'University Applicant',
-                  quote: 'I practiced in Italian with the strict teacher mode. It prepared me perfectly for my oral exam.',
-                  rating: 5,
-                },
-                {
-                  name: 'Luca T.',
-                  role: 'Professional Certification',
-                  quote: 'Used the extended mode for deep technical content. The AI adapts to my weak points really well.',
-                  rating: 5,
-                },
-              ].map((story, idx) => (
-                <Card key={idx} variant="elevated" className="hover:shadow-xl transition-shadow bg-gradient-to-b from-white to-gray-50">
-                  <div className="p-8">
-                    <div className="flex gap-1 mb-4">
-                      {Array.from({ length: story.rating }).map((_, i) => (
-                        <Award key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                      ))}
-                    </div>
-                    <p className="text-gray-700 mb-6 leading-relaxed font-medium italic">"{story.quote}"</p>
-                    <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-                      <div>
-                        <p className="font-bold text-gray-900">{story.name}</p>
-                        <p className="text-sm text-gray-600">{story.role}</p>
-                      </div>
-                      <Users className="w-5 h-5 text-primary-600" />
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-
-            <div className="mt-16 rounded-2xl border-2 border-primary-200 bg-gradient-to-r from-primary-50 to-secondary-50 p-8 text-center md:p-12">
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">1000+ Active Learners</h3>
-              <p className="text-lg text-gray-600 mb-6">Trust Interrogo to improve their oral exam performance</p>
-              <div className="grid grid-cols-3 gap-8 md:gap-16 mt-8">
-                <div>
-                  <p className="text-3xl font-bold text-primary-600">95%</p>
-                  <p className="text-sm text-gray-600 mt-1">Score Improvement Rate</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-secondary-600">4.8/5</p>
-                  <p className="text-sm text-gray-600 mt-1">Average Rating</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-success-600">2M+</p>
-                  <p className="text-sm text-gray-600 mt-1">Questions Generated</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Benefits Section */}
         <section className="section-padding bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 relative overflow-hidden">
           {/* Gradient blob background */}
@@ -627,7 +552,6 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
-      <LandingChatbot />
     </div>
   );
 }
