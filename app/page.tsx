@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/Card';
 import { Header, Footer } from '@/components/ui';
 import { BookOpen, Brain, TrendingUp, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 import { apiService } from '@/lib/api';
+import LandingChatbot from '@/components/ui/LandingChatbot';
 
 export default function Home() {
   const router = useRouter();
@@ -379,6 +380,7 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
+      <LandingChatbot />
     </div>
   );
 }

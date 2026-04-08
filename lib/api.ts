@@ -268,6 +268,15 @@ class ApiService {
     });
     return response.data;
   }
+
+  async chatWithLandingAssistant(message: string, history: Array<{ role: 'assistant' | 'user'; content: string }>, locale?: string) {
+    const response = await this.client.post('/public/chatbot', {
+      message,
+      history,
+      locale,
+    });
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();
