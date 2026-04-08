@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Header, Footer } from '@/components/ui';
-import { BookOpen, Brain, TrendingUp, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
+import { BookOpen, Brain, TrendingUp, Sparkles, CheckCircle2, ArrowRight, Zap, Target, BarChart3, Shield, Heart, MessageSquare, Users, Award } from 'lucide-react';
 import { apiService } from '@/lib/api';
 import LandingChatbot from '@/components/ui/LandingChatbot';
 
@@ -243,6 +243,253 @@ export default function Home() {
                   )}
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Exam Modes Section */}
+        <section className="section-padding bg-gradient-to-b from-white to-gray-50">
+          <div className="container-max">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Choose Your Practice Mode
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Different modes for different goals
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-4 gap-6">
+              {[
+                {
+                  icon: Zap,
+                  title: 'Quick Test',
+                  description: '3 rapid questions on a specific topic. Perfect for focused, 5-minute practice sessions.',
+                  color: 'from-orange-500 to-orange-600',
+                  duration: '~5 min',
+                },
+                {
+                  icon: Target,
+                  title: 'Standard',
+                  description: 'Full-length exam with 10-12 questions covering the entire topic',
+                  color: 'from-blue-500 to-blue-600',
+                  duration: '~20-30 min',
+                },
+                {
+                  icon: BarChart3,
+                  title: 'Extended',
+                  description: 'Deep dive with 15+ questions, follow-ups, and multi-layered assessment',
+                  color: 'from-purple-500 to-purple-600',
+                  duration: '~40-50 min',
+                },
+                {
+                  icon: Shield,
+                  title: 'Deep Dive',
+                  description: 'Rigorous assessment with philosophical questions and complex reasoning required',
+                  color: 'from-red-500 to-red-600',
+                  duration: '~60+ min',
+                },
+              ].map((mode, idx) => {
+                const Icon = mode.icon;
+                return (
+                  <Card key={idx} variant="elevated" className="hover:shadow-xl transition-shadow">
+                    <div className="p-6 flex flex-col h-full">
+                      <div className={`p-3 rounded-xl bg-gradient-to-br ${mode.color} shadow-lg w-fit mb-4`}>
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">{mode.title}</h3>
+                      <p className="text-sm text-gray-600 flex-grow mb-4 leading-relaxed">{mode.description}</p>
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{mode.duration}</p>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Teacher Personalities Section */}
+        <section className="section-padding">
+          <div className="container-max">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Choose Your Teacher Style
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Adapt the AI to match your learning preference
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: Shield,
+                  title: 'Strict Teacher',
+                  description: 'No-nonsense, demanding feedback. Perfect if you want challenging questions and honest evaluation.',
+                  emoji: '🎯',
+                },
+                {
+                  icon: Heart,
+                  title: 'Supportive Teacher',
+                  description: 'Encouraging and constructive. Great for building confidence while learning.',
+                  emoji: '💪',
+                },
+                {
+                  icon: MessageSquare,
+                  title: 'Socratic Method',
+                  description: 'Questions within questions. Learn by discovering answers yourself through guided inquiry.',
+                  emoji: '🤔',
+                },
+              ].map((personality, idx) => (
+                <Card key={idx} variant="elevated" size="lg" className="hover:shadow-xl transition-shadow">
+                  <div className="p-8 flex flex-col items-center text-center">
+                    <span className="text-5xl mb-4">{personality.emoji}</span>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{personality.title}</h3>
+                    <p className="text-gray-600 leading-relaxed">{personality.description}</p>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Analytics & Insights Section */}
+        <section className="section-padding bg-gradient-to-b from-gray-50 to-white">
+          <div className="container-max">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Track Your Progress
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                See exactly what you're improving and where to focus next
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {[
+                {
+                  icon: TrendingUp,
+                  title: "Performance Trends",
+                  description: "Watch your scores improve over time with detailed 4-week trend analysis showing weekly progress.",
+                  metrics: ['Score trend line', 'Weekly averages', 'Peak performance'],
+                },
+                {
+                  icon: Target,
+                  title: "Weak Point Detection",
+                  description: "AI identifies topics where you struggle most so you can focus practice where it matters.",
+                  metrics: ['Topic accuracy', 'Confidence levels', 'Improvement path'],
+                },
+                {
+                  icon: BarChart3,
+                  title: "Comprehensive Analytics",
+                  description: "Complete breakdown of response times, confidence metrics, and knowledge gaps.",
+                  metrics: ['AI response time', 'Hesitation patterns', 'Knowledge gaps'],
+                },
+                {
+                  icon: Award,
+                  title: "Skill Mastery Badges",
+                  description: "Unlock achievements as you progress and build confidence across different topics.",
+                  metrics: ['Topic badges', 'Consistency streaks', 'Mastery levels'],
+                },
+              ].map((insight, idx) => {
+                const Icon = insight.icon;
+                return (
+                  <Card key={idx} variant="elevated" className="hover:shadow-xl transition-shadow">
+                    <div className="p-8">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="p-3 rounded-lg bg-primary-100">
+                          <Icon className="w-6 h-6 text-primary-600" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-900">{insight.title}</h3>
+                          <p className="text-sm text-gray-600 mt-1">{insight.description}</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {insight.metrics.map((metric) => (
+                          <span key={metric} className="inline-block rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700">
+                            {metric}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Success Stories & Social Proof Section */}
+        <section className="section-padding bg-white">
+          <div className="container-max">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Join Thousands of Successful Learners
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Real improvements from real students like you
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  name: 'Marco R.',
+                  role: 'Final Year Student',
+                  quote: 'Went from C average to B+ in just 3 weeks with consistent quick tests. The feedback is incredibly detailed.',
+                  rating: 5,
+                },
+                {
+                  name: 'Sofia P.',
+                  role: 'University Applicant',
+                  quote: 'I practiced in Italian with the strict teacher mode. It prepared me perfectly for my oral exam.',
+                  rating: 5,
+                },
+                {
+                  name: 'Luca T.',
+                  role: 'Professional Certification',
+                  quote: 'Used the extended mode for deep technical content. The AI adapts to my weak points really well.',
+                  rating: 5,
+                },
+              ].map((story, idx) => (
+                <Card key={idx} variant="elevated" className="hover:shadow-xl transition-shadow bg-gradient-to-b from-white to-gray-50">
+                  <div className="p-8">
+                    <div className="flex gap-1 mb-4">
+                      {Array.from({ length: story.rating }).map((_, i) => (
+                        <Award key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 mb-6 leading-relaxed font-medium italic">"{story.quote}"</p>
+                    <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                      <div>
+                        <p className="font-bold text-gray-900">{story.name}</p>
+                        <p className="text-sm text-gray-600">{story.role}</p>
+                      </div>
+                      <Users className="w-5 h-5 text-primary-600" />
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+
+            <div className="mt-16 rounded-2xl border-2 border-primary-200 bg-gradient-to-r from-primary-50 to-secondary-50 p-8 text-center md:p-12">
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">1000+ Active Learners</h3>
+              <p className="text-lg text-gray-600 mb-6">Trust Interrogo to improve their oral exam performance</p>
+              <div className="grid grid-cols-3 gap-8 md:gap-16 mt-8">
+                <div>
+                  <p className="text-3xl font-bold text-primary-600">95%</p>
+                  <p className="text-sm text-gray-600 mt-1">Score Improvement Rate</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-bold text-secondary-600">4.8/5</p>
+                  <p className="text-sm text-gray-600 mt-1">Average Rating</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-bold text-success-600">2M+</p>
+                  <p className="text-sm text-gray-600 mt-1">Questions Generated</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
