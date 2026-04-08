@@ -197,7 +197,7 @@ export default function Dashboard() {
                     Your Dashboard
                   </h1>
                   <p className="text-gray-600 text-lg max-w-2xl">
-                    Welcome back, <span className="font-semibold">{displayName}</span>. Review your plan, launch a new exam, or upgrade the account in one place.
+                    Welcome back, <span className="font-semibold">{displayName}</span>. Review your plan, launch a new exam, or upgrade your account in one place.
                   </p>
                 </div>
 
@@ -270,13 +270,13 @@ export default function Dashboard() {
               </div>
 
               <div className="space-y-4">
-                <Card className="border-0 bg-gradient-to-br from-primary-600 to-secondary-700 text-white shadow-xl p-5">
+                <Card className="border-0 bg-gradient-to-br from-primary-700 via-primary-600 to-secondary-700 text-white shadow-xl p-5">
                   <div className="flex items-center justify-between gap-4">
                     <div>
                       <p className="text-xs uppercase tracking-[0.2em] text-white/70">Current Plan</p>
                       <p className="mt-1 text-2xl font-bold">{billing?.isPro ? 'Pro Monthly' : 'Free Plan'}</p>
                     </div>
-                    <div className="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">
+                    <div className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white">
                       {billing?.isPro ? '€9.99/mo' : '10 exams/mo'}
                     </div>
                   </div>
@@ -290,7 +290,7 @@ export default function Dashboard() {
                       <Button
                         onClick={() => router.push('/dashboard#billing')}
                         size="lg"
-                        className="bg-white text-primary-700 hover:bg-white/90"
+                        className="bg-white text-primary-700 hover:bg-white/90 shadow-sm"
                         disabled={!billing?.stripeReady}
                       >
                         Upgrade Plan
@@ -299,7 +299,7 @@ export default function Dashboard() {
                       <Button
                         onClick={openPortal}
                         size="lg"
-                        className="bg-white text-primary-700 hover:bg-white/90"
+                        className="bg-white text-primary-700 hover:bg-white/90 shadow-sm"
                         disabled={!billing?.stripeReady || isBillingLoading}
                       >
                         Billing Portal
@@ -478,11 +478,11 @@ export default function Dashboard() {
                 </div>
                 <div className="flex gap-3">
                   {!billing.isPro ? (
-                    <Button isLoading={isBillingLoading} onClick={openCheckout} disabled={!billing.stripeReady}>
+                    <Button isLoading={isBillingLoading} onClick={openCheckout} disabled={!billing.stripeReady} className="shadow-sm">
                       Upgrade to Pro
                     </Button>
                   ) : (
-                    <Button variant="outline" isLoading={isBillingLoading} onClick={openPortal} disabled={!billing.stripeReady}>
+                    <Button variant="outline" isLoading={isBillingLoading} onClick={openPortal} disabled={!billing.stripeReady} className="shadow-sm">
                       Manage Subscription
                     </Button>
                   )}
