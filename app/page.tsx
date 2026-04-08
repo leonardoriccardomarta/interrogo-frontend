@@ -250,15 +250,15 @@ export default function Home() {
         <section className="section-padding bg-gradient-to-b from-white to-gray-50">
           <div className="container-max">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
                 Choose Your Practice Mode
               </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 Different modes for different goals
               </p>
             </div>
 
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-4 gap-6 items-stretch">
               {[
                 {
                   icon: Zap,
@@ -291,12 +291,12 @@ export default function Home() {
               ].map((mode, idx) => {
                 const Icon = mode.icon;
                 return (
-                  <Card key={idx} variant="elevated" className="hover:shadow-xl transition-shadow">
-                    <div className="p-6 flex flex-col h-full">
+                  <Card key={idx} variant="elevated" className="hover:shadow-xl transition-shadow h-full">
+                    <div className="p-8 flex flex-col h-full min-h-[18rem]">
                       <div className={`p-3 rounded-xl bg-gradient-to-br ${mode.color} shadow-lg w-fit mb-4`}>
                         <Icon className="w-6 h-6 text-white" />
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-2">{mode.title}</h3>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">{mode.title}</h3>
                       <p className="text-sm text-gray-600 flex-grow mb-4 leading-relaxed">{mode.description}</p>
                       <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{mode.duration}</p>
                     </div>
@@ -311,15 +311,15 @@ export default function Home() {
         <section className="section-padding">
           <div className="container-max">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
                 Choose Your Teacher Style
               </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 Adapt the AI to match your learning preference
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-8 items-stretch">
               {[
                 {
                   icon: Shield,
@@ -340,11 +340,11 @@ export default function Home() {
                   emoji: '🤔',
                 },
               ].map((personality, idx) => (
-                <Card key={idx} variant="elevated" size="lg" className="hover:shadow-xl transition-shadow">
-                  <div className="p-8 flex flex-col items-center text-center">
-                    <span className="text-5xl mb-4">{personality.emoji}</span>
+                <Card key={idx} variant="elevated" size="lg" className="hover:shadow-xl transition-shadow h-full">
+                  <div className="p-8 flex flex-col items-center text-center h-full min-h-[18rem]">
+                    <span className="text-5xl mb-5">{personality.emoji}</span>
                     <h3 className="text-xl font-bold text-gray-900 mb-3">{personality.title}</h3>
-                    <p className="text-gray-600 leading-relaxed">{personality.description}</p>
+                    <p className="text-sm text-gray-600 leading-relaxed max-w-sm">{personality.description}</p>
                   </div>
                 </Card>
               ))}
