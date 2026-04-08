@@ -91,48 +91,48 @@ export function AdvancedStats({ sessions, user, analytics }: AdvancedStatsProps)
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
-        <div className="border-l-4 border-l-success-500 p-6">
+      <Card className="border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div className="p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-gray-900">Progress</h3>
             <TrendingUp className="w-5 h-5 text-success-600" />
           </div>
-          <p className="text-3xl font-bold text-success-600 mb-1">
+          <p className="text-2xl font-bold text-success-600 mb-1">
             {improvementTrend > 0 ? '+' : ''}{improvementTrend}%
           </p>
           <p className="text-sm text-gray-600">Improvement across recent exams</p>
         </div>
       </Card>
 
-      <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
-        <div className="border-l-4 border-l-primary-500 p-6">
+      <Card className="border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div className="p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-gray-900">Preferred Difficulty</h3>
             <Target className="w-5 h-5 text-primary-600" />
           </div>
-          <p className="text-3xl font-bold text-primary-600 mb-1">Lvl {favoriteDifficulty}</p>
+          <p className="text-2xl font-bold text-primary-600 mb-1">Lvl {favoriteDifficulty}</p>
           <p className="text-sm text-gray-600">Most frequently tested level</p>
         </div>
       </Card>
 
-      <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
-        <div className="border-l-4 border-l-warning-500 p-6">
+      <Card className="border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div className="p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-gray-900">Peak Score</h3>
             <Award className="w-5 h-5 text-warning-600" />
           </div>
-          <p className="text-3xl font-bold text-warning-600 mb-1">{bestScore.toFixed(1)}/10</p>
+          <p className="text-2xl font-bold text-warning-600 mb-1">{bestScore.toFixed(1)}/10</p>
           <p className="text-sm text-gray-600">Highest score achieved</p>
         </div>
       </Card>
 
-      <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
-        <div className="border-l-4 border-l-secondary-500 p-6">
+      <Card className="border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div className="p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-gray-900">Teacher Style</h3>
             <Zap className="w-5 h-5 text-secondary-600" />
           </div>
-          <p className="text-3xl font-bold text-secondary-600 mb-1">
+          <p className="text-2xl font-bold text-secondary-600 mb-1">
             {strictCount > supportiveCount ? 'Strict' : 'Supportive'}
           </p>
           <p className="text-sm text-gray-600">
@@ -143,32 +143,32 @@ export function AdvancedStats({ sessions, user, analytics }: AdvancedStatsProps)
         </div>
       </Card>
 
-      <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
-        <div className="border-l-4 border-l-primary-400 p-6">
+      <Card className="border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div className="p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-gray-900">Topics Explored</h3>
             <Clock className="w-5 h-5 text-primary-400" />
           </div>
-          <p className="text-3xl font-bold text-primary-400 mb-1">{topicsSet.size}</p>
+          <p className="text-2xl font-bold text-primary-500 mb-1">{topicsSet.size}</p>
           <p className="text-sm text-gray-600">Unique topics tested</p>
         </div>
       </Card>
 
-      <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
-        <div className="border-l-4 border-l-success-400 p-6">
+      <Card className="border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div className="p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-gray-900">Completed Sessions</h3>
             <Award className="w-5 h-5 text-success-400" />
           </div>
-          <p className="text-3xl font-bold text-success-400 mb-1">
+          <p className="text-2xl font-bold text-success-500 mb-1">
             {totalExams > 0 ? ((completedExams / totalExams) * 100).toFixed(0) : 0}%
           </p>
           <p className="text-sm text-gray-600">{completedExams}/{totalExams}</p>
         </div>
       </Card>
 
-      <Card className="border-0 overflow-hidden hover:shadow-lg transition-all">
-        <div className="border-l-4 border-l-error-400 p-6">
+      <Card className="border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div className="p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-gray-900">Primary Gap</h3>
             <Target className="w-5 h-5 text-error-500" />

@@ -507,7 +507,7 @@ export default function Dashboard() {
                   <Card
                     key={session.id}
                     variant="elevated"
-                    className="cursor-pointer hover:shadow-xl transition-all transform hover:scale-102 border-0 overflow-hidden group"
+                    className="cursor-pointer hover:shadow-xl transition-shadow duration-200 border-0 overflow-hidden group"
                     onClick={() => router.push(`/interrogo?sessionId=${session.id}`)}
                   >
                     <div className="p-6 flex items-start justify-between">
