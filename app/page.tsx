@@ -117,9 +117,9 @@ export default function Home() {
                   <Button
                     variant="ghost"
                     size="lg"
-                    onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                    onClick={() => router.push('/dashboard#billing')}
                   >
-                    View Plans
+                    Upgrade Plan
                   </Button>
                 </>
               )}
@@ -136,7 +136,7 @@ export default function Home() {
               </div>
               <div className="rounded-xl border border-gray-200 bg-white/70 backdrop-blur p-3">
                 <p className="text-xs text-gray-500">Billing</p>
-                <p className="text-sm font-semibold text-gray-900">Manage your plan after sign in</p>
+                <p className="text-sm font-semibold text-gray-900">Upgrade your plan after sign in</p>
               </div>
             </div>
           </div>
@@ -293,7 +293,7 @@ export default function Home() {
                     className="mt-6 w-full"
                     onClick={() => (isAuthenticated ? router.push('/dashboard#billing') : router.push('/signup'))}
                   >
-                    {isAuthenticated ? 'Manage Billing' : 'Start Free'}
+                    {isAuthenticated ? 'Upgrade Plan' : 'Start Free'}
                   </Button>
                 </div>
               </Card>
@@ -304,7 +304,7 @@ export default function Home() {
                     Most Popular
                   </div>
                   <p className="mt-3 text-sm font-semibold uppercase tracking-wide text-primary-700">Pro</p>
-                  <p className="mt-2 text-4xl font-bold text-gray-900">EUR9.99<span className="text-lg text-gray-600">/month</span></p>
+                  <p className="mt-2 text-4xl font-bold text-gray-900">€9.99<span className="text-lg text-gray-600">/month</span></p>
                   <p className="mt-1 text-sm text-gray-600">Built for consistent weekly preparation.</p>
                   <ul className="mt-6 space-y-3 text-sm text-gray-700">
                     <li>Unlimited exams and quick tests</li>
@@ -314,9 +314,9 @@ export default function Home() {
                   <Button
                     size="lg"
                     className="mt-6 w-full"
-                    onClick={() => (isAuthenticated ? router.push('/dashboard#billing') : router.push('/login'))}
+                    onClick={() => (isAuthenticated ? router.push('/dashboard#billing') : router.push('/signup'))}
                   >
-                    {isAuthenticated ? 'Manage Billing' : 'Sign in to Upgrade'}
+                    {isAuthenticated ? 'Upgrade Plan' : 'Sign up to Upgrade'}
                   </Button>
                 </div>
               </Card>

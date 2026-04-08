@@ -171,6 +171,8 @@ export default function Dashboard() {
   const latestWeeklyScore = analytics?.weeklyTrend?.length
     ? analytics.weeklyTrend[analytics.weeklyTrend.length - 1]?.avgScore
     : null;
+  const displayName = [user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.email || 'Student';
+  const currentPlanLabel = billing?.isPro ? 'Pro' : 'Free';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-100 p-4 md:p-8 relative overflow-hidden">
@@ -183,92 +185,161 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-12 animate-slide-up">
-          <Card className="border-0 bg-gradient-to-r from-white/95 via-primary-50 to-secondary-50 shadow-xl p-6 md:p-8">
-            <div className="flex justify-between items-start gap-6 flex-wrap">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700 mb-3">
+          <Card className="border-0 bg-gradient-to-br from-white via-white to-primary-50 shadow-2xl p-6 md:p-8">
+            <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700">
                   <Sparkles className="w-3 h-3" />
                   Learning Command Center
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                  Your Dashboard
-                </h1>
-                <p className="text-gray-600 text-lg">
-                  Welcome back, <span className="font-semibold">{user?.firstName || user?.email || 'Student'}</span>! Track progress, KPIs, and your next moves.
-                </p>
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+                    Your Dashboard
+                  </h1>
+                  <p className="text-gray-600 text-lg max-w-2xl">
+                    Welcome back, <span className="font-semibold">{displayName}</span>. Review your plan, launch a new exam, or upgrade the account in one place.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <Card className="border-0 bg-white/90 shadow-md p-4">
+                    <div className="flex items-center gap-3">
+                      <BookOpen className="w-5 h-5 text-primary-600" />
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-gray-500">Profile</p>
+                        <p className="text-sm font-semibold text-gray-900">{displayName}</p>
+                      </div>
+                    </div>
+                  </Card>
+                  <Card className="border-0 bg-white/90 shadow-md p-4">
+                    <div className="flex items-center gap-3">
+                      <TrendingUp className="w-5 h-5 text-secondary-600" />
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-gray-500">Plan</p>
+                        <p className="text-sm font-semibold text-gray-900">{currentPlanLabel}</p>
+                      </div>
+                    </div>
+                  </Card>
+                  <Card className="border-0 bg-white/90 shadow-md p-4">
+                    <div className="flex items-center gap-3">
+                      <Clock className="w-5 h-5 text-success-600" />
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-gray-500">Next step</p>
+                        <p className="text-sm font-semibold text-gray-900">Start a new exam</p>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    onClick={() => router.push('/interrogo')}
+                    size="lg"
+                    className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    New Exam
+                  </Button>
+                  <Button
+                    onClick={handleQuickTest}
+                    disabled={isQuickTestLoading}
+                    size="lg"
+                    className="bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800 text-white"
+                  >
+                    <Lightning className="w-5 h-5 mr-2" />
+                    Quick Test
+                  </Button>
+                  <Button variant="outline" onClick={() => router.push('/dashboard#billing')} size="lg">
+                    Upgrade Plan
+                  </Button>
+                  {user?.role === 'tutor' && (
+                    <Button
+                      onClick={() => router.push('/teacher')}
+                      size="lg"
+                      variant="outline"
+                      className="border-primary-300 text-primary-700 hover:bg-primary-50"
+                    >
+                      Teacher View
+                    </Button>
+                  )}
+                  <Button variant="ghost" onClick={handleLogout} size="lg">
+                    <LogOut className="w-5 h-5 mr-2" />
+                    Logout
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-3 flex-wrap justify-end">
-              <Button
-                onClick={() => router.push('/')}
-                size="lg"
-                variant="outline"
-              >
-                Home
-              </Button>
-              {user?.role === 'tutor' && (
-                <Button
-                  onClick={() => router.push('/teacher')}
-                  size="lg"
-                  variant="outline"
-                  className="border-primary-300 text-primary-700 hover:bg-primary-50"
-                >
-                  Teacher View
-                </Button>
-              )}
-              <Button
-                onClick={() => router.push('/interrogo')}
-                size="lg"
-                className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
-              >
-                <Plus className="w-5 h-5 mr-2" />
-                New Exam
-              </Button>
-              <Button
-                onClick={handleQuickTest}
-                disabled={isQuickTestLoading}
-                size="lg"
-                className="bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800 text-white"
-              >
-                <Lightning className="w-5 h-5 mr-2" />
-                Quick Test
-              </Button>
-              <Button variant="outline" onClick={handleLogout} size="lg">
-                <LogOut className="w-5 h-5 mr-2" />
-                Logout
-              </Button>
+
+              <div className="space-y-4">
+                <Card className="border-0 bg-gradient-to-br from-primary-600 to-secondary-700 text-white shadow-xl p-5">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-white/70">Current Plan</p>
+                      <p className="mt-1 text-2xl font-bold">{billing?.isPro ? 'Pro Monthly' : 'Free Plan'}</p>
+                    </div>
+                    <div className="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">
+                      {billing?.isPro ? '€9.99/mo' : '10 exams/mo'}
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm text-white/85">
+                    {billing?.isPro
+                      ? 'Unlimited exams, quick tests, and the full billing portal are available.'
+                      : 'You can upgrade anytime to unlock unlimited sessions and billing management.'}
+                  </p>
+                  <div className="mt-5 flex gap-3 flex-wrap">
+                    {!billing?.isPro ? (
+                      <Button
+                        onClick={() => router.push('/dashboard#billing')}
+                        size="lg"
+                        className="bg-white text-primary-700 hover:bg-white/90"
+                        disabled={!billing?.stripeReady}
+                      >
+                        Upgrade Plan
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={openPortal}
+                        size="lg"
+                        className="bg-white text-primary-700 hover:bg-white/90"
+                        disabled={!billing?.stripeReady || isBillingLoading}
+                      >
+                        Billing Portal
+                      </Button>
+                    )}
+                    <Button variant="outline" onClick={() => router.push('/')} size="lg" className="border-white/30 text-white hover:bg-white/10">
+                      Home
+                    </Button>
+                  </div>
+                  {!billing?.stripeReady && (
+                    <p className="mt-4 text-xs text-white/75">
+                      Billing is not configured on the server yet.
+                    </p>
+                  )}
+                </Card>
+
+                <Card className="border-0 bg-white/90 shadow-lg p-5">
+                  <p className="text-xs uppercase tracking-wide text-gray-500">Account details</p>
+                  <div className="mt-3 space-y-3 text-sm">
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-gray-500">Email</span>
+                      <span className="font-medium text-gray-900 text-right break-all">{user?.email || '-'}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-gray-500">Role</span>
+                      <span className="font-medium text-gray-900">{user?.role || 'student'}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-gray-500">Organization</span>
+                      <span className="font-medium text-gray-900 text-right">{user?.organization || '—'}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-gray-500">Class</span>
+                      <span className="font-medium text-gray-900 text-right">{user?.className || '—'}</span>
+                    </div>
+                  </div>
+                </Card>
               </div>
             </div>
           </Card>
-
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="border-0 bg-white/85 shadow-md p-4 hover:shadow-lg transition-all">
-              <div className="flex items-center gap-3">
-                <BookOpen className="w-5 h-5 text-primary-600" />
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Recommended Focus</p>
-                  <p className="text-xs text-gray-600">Targeted review on your biggest gaps</p>
-                </div>
-              </div>
-            </Card>
-            <Card className="border-0 bg-white/85 shadow-md p-4 hover:shadow-lg transition-all" style={{ animationDelay: '0.06s' }}>
-              <div className="flex items-center gap-3">
-                <Sparkles className="w-5 h-5 text-secondary-600" />
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Best mode</p>
-                  <p className="text-xs text-gray-600">Extended/Deep for realistic simulations</p>
-                </div>
-              </div>
-            </Card>
-            <Card className="border-0 bg-white/85 shadow-md p-4 hover:shadow-lg transition-all" style={{ animationDelay: '0.12s' }}>
-              <div className="flex items-center gap-3">
-                <TrendingUp className="w-5 h-5 text-success-600" />
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Weekly goal</p>
-                  <p className="text-xs text-gray-600">Increase source coverage above 40%</p>
-                </div>
-              </div>
-            </Card>
-          </div>
         </div>
 
         {error && (
