@@ -136,7 +136,7 @@ export default function Home() {
               </div>
               <div className="rounded-xl border border-gray-200 bg-white/70 backdrop-blur p-3">
                 <p className="text-xs text-gray-500">Billing</p>
-                <p className="text-sm font-semibold text-gray-900">Secure Stripe checkout and portal</p>
+                <p className="text-sm font-semibold text-gray-900">Manage your plan after sign in</p>
               </div>
             </div>
           </div>
@@ -287,6 +287,14 @@ export default function Home() {
                     <li>Quick Test mode included</li>
                     <li>Session history and core analytics</li>
                   </ul>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="mt-6 w-full"
+                    onClick={() => (isAuthenticated ? router.push('/dashboard#billing') : router.push('/signup'))}
+                  >
+                    {isAuthenticated ? 'Manage Billing' : 'Start Free'}
+                  </Button>
                 </div>
               </Card>
 
@@ -303,6 +311,13 @@ export default function Home() {
                     <li>Advanced performance analytics</li>
                     <li>Priority access to new improvements</li>
                   </ul>
+                  <Button
+                    size="lg"
+                    className="mt-6 w-full"
+                    onClick={() => (isAuthenticated ? router.push('/dashboard#billing') : router.push('/login'))}
+                  >
+                    {isAuthenticated ? 'Manage Billing' : 'Sign in to Upgrade'}
+                  </Button>
                 </div>
               </Card>
             </div>

@@ -388,7 +388,7 @@ export default function Dashboard() {
         )}
 
         {billing && (
-          <div className="mb-12 animate-slide-up">
+          <div id="billing" className="mb-12 animate-slide-up">
             <Card variant="elevated" className="border-0 bg-gradient-to-br from-indigo-50 to-indigo-100/50">
               <div className="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
