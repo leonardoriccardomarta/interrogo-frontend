@@ -363,76 +363,62 @@ export default function Dashboard() {
             {/* Total Exams Card */}
             <Card
               variant="elevated"
-              className="bg-gradient-to-br from-primary-50 to-primary-100/50 border-0 overflow-hidden group hover:shadow-lg transition-all"
+              className="border border-gray-200 bg-white/90 overflow-hidden group hover:shadow-md transition-shadow duration-200"
             >
-              <div className="p-6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-gray-600 font-medium">Total Exams</h3>
-                    <Trophy className="w-5 h-5 text-primary-600" />
-                  </div>
-                  <p className="text-3xl font-bold text-primary-700">{totalExams}</p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    {completedExams} completed
-                  </p>
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">Total Exams</h3>
+                  <Trophy className="w-5 h-5 text-primary-600" />
                 </div>
+                <p className="text-2xl font-bold text-primary-700">{totalExams}</p>
+                <p className="text-sm text-gray-600 mt-2">{completedExams} completed</p>
               </div>
             </Card>
 
             {/* Average Score Card */}
             <Card
               variant="elevated"
-              className="bg-gradient-to-br from-success-50 to-success-100/50 border-0 overflow-hidden group hover:shadow-lg transition-all"
+              className="border border-gray-200 bg-white/90 overflow-hidden group hover:shadow-md transition-shadow duration-200"
             >
-              <div className="p-6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-success-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-gray-600 font-medium">Average Score</h3>
-                    <TrendingUp className="w-5 h-5 text-success-600" />
-                  </div>
-                  <p className="text-3xl font-bold text-success-700">{avgScore}/10</p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    {completedExams > 0 ? 'Based on ' + completedExams + ' exam(s)' : 'No completed exams yet'}
-                  </p>
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">Average Score</h3>
+                  <TrendingUp className="w-5 h-5 text-success-600" />
                 </div>
+                <p className="text-2xl font-bold text-success-700">{avgScore}/10</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  {completedExams > 0 ? 'Based on ' + completedExams + ' exam(s)' : 'No completed exams yet'}
+                </p>
               </div>
             </Card>
 
             {/* Total Questions Card */}
             <Card
               variant="elevated"
-              className="bg-gradient-to-br from-secondary-50 to-secondary-100/50 border-0 overflow-hidden group hover:shadow-lg transition-all"
+              className="border border-gray-200 bg-white/90 overflow-hidden group hover:shadow-md transition-shadow duration-200"
             >
-              <div className="p-6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-secondary-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-gray-600 font-medium">Answers Submitted</h3>
-                    <Zap className="w-5 h-5 text-secondary-600" />
-                  </div>
-                  <p className="text-3xl font-bold text-secondary-700">{totalStudentAnswers}</p>
-                  <p className="text-sm text-gray-600 mt-2">Student messages</p>
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">Answers Submitted</h3>
+                  <Zap className="w-5 h-5 text-secondary-600" />
                 </div>
+                <p className="text-2xl font-bold text-secondary-700">{totalStudentAnswers}</p>
+                <p className="text-sm text-gray-600 mt-2">Student messages</p>
               </div>
             </Card>
 
             {/* Exam Streak Card */}
             <Card
               variant="elevated"
-              className="bg-gradient-to-br from-warning-50 to-warning-100/50 border-0 overflow-hidden group hover:shadow-lg transition-all"
+              className="border border-gray-200 bg-white/90 overflow-hidden group hover:shadow-md transition-shadow duration-200"
             >
-              <div className="p-6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-warning-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-gray-600 font-medium">Momentum</h3>
-                    <Clock className="w-5 h-5 text-warning-600" />
-                  </div>
-                  <p className="text-3xl font-bold text-warning-700">Keep going!</p>
-                  <p className="text-sm text-gray-600 mt-2">Take another exam</p>
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">Momentum</h3>
+                  <Clock className="w-5 h-5 text-warning-600" />
                 </div>
+                <p className="text-2xl font-bold text-warning-700">Keep going!</p>
+                <p className="text-sm text-gray-600 mt-2">Take another exam</p>
               </div>
             </Card>
           </div>
